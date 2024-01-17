@@ -104,9 +104,18 @@ void Game::processKeys(sf::Event t_event)
 	}
 
 	// Movement
+	// Move Right
 	if (sf::Keyboard::D == t_event.key.code)
 	{
+		b_PacmanMoveLeft = false; // Stops moving left
 		b_PacmanMoveRight = true;
+	}
+
+	// Move Left
+	if (sf::Keyboard::A == t_event.key.code)
+	{
+		b_PacmanMoveRight = true; // Stops moving right
+		b_PacmanMoveLeft = true;
 	}
 }
 
@@ -130,7 +139,26 @@ void Game::update(sf::Time t_deltaTime)
 		movement.x += 1.0f;
 	}
 
-	m_PacmanShape.move(movement);
+	// Check if A has been pressed
+	if (b_PacmanMoveLeft == true)
+	{
+		movement.x -= 1.0f;
+	}
+
+	// Movement by Delta time (last frame)  
+	m_PacmanShape.move(movement * deltaTime.asSeconds());
+
+	// Collision Detection - Use globalbounds instead?
+	if (m_PacmanShape.getPosition().x > m_PellotShape.getPosition().x &&
+		m_PacmanShape.getPosition().x < m_PellotShape.getPosition().x ||
+		m_PacmanShape.getPosition().y > m_PellotShape.getPosition().y &&
+		m_PacmanShape.getPosition().y < m_PellotShape.getPosition().y)
+	{
+		// Collided!
+		// Move Pellot off-screen
+		m_PellotShape.setPosition(1000.0f, 1000.0f);
+
+	}
 }
 
 /// <summary>

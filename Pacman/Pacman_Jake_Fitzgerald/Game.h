@@ -40,7 +40,8 @@ private:
 	sf::CircleShape m_PellotShape;
 	sf::RectangleShape m_GhostShape;
 
-	bool b_PacmanMoveRight;
+	bool b_PacmanMoveRight = false;
+	bool b_PacmanMoveLeft = false;
 
 };
 
