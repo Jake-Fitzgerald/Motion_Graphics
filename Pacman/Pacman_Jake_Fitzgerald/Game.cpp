@@ -8,20 +8,25 @@
 #include "Game.h"
 #include <iostream>
 
-
-
-/// <summary>
-/// default constructor
-/// setup the window properties
-/// load and setup the text 
-/// load and setup thne image
-/// </summary>
-Game::Game() :
-	m_window{ sf::VideoMode{ 800U, 600U, 32U }, "SFML Game" },
-	m_exitGame{false} //when true game will exit
+void Game::setupFontAndText()
 {
-	setupFontAndText(); // load font 
-	
+	if (!m_ArialBlackfont.loadFromFile("ASSETS\\FONTS\\ariblk.ttf"))
+	{
+		std::cout << "problem loading arial black font" << std::endl;
+	}
+
+	// Setup Text
+	m_TextPacman.setFont(m_ArialBlackfont);
+	m_TextPacman.setString("P A C M A N");
+	m_TextPacman.setCharacterSize(60);
+	m_TextPacman.setFillColor(sf::Color::White);
+	m_TextPacman.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	m_TextPacman.setOrigin(30.0f, 10.0f);
+	m_TextPacman.setPosition(230.0f, 60.0f);
+	m_TextPacman.setOutlineColor(sf::Color::Yellow);
+	m_TextPacman.setOutlineThickness(0.8f);
+
+
 	// Shapes setup
 	// Pacman
 	m_PacmanShape.setRadius(40.0f);
@@ -32,6 +37,39 @@ Game::Game() :
 	m_PellotShape.setRadius(10.0f);
 	m_PellotShape.setPosition(200.0f, 434.0f);
 	m_PellotShape.setFillColor(sf::Color::Yellow);
+
+	// Environment
+	// Top Blue Bar
+	m_TopBlueBar.setPosition(0.0f, 380.0f);
+	m_TopBlueBar.setSize(sf::Vector2f(800.0f, 4.0f));
+	m_TopBlueBar.setFillColor(sf::Color::Blue);
+	// Bottom Blue Bar
+	m_BottomBlueBar.setPosition(0.0f, 500.0f);
+	m_BottomBlueBar.setSize(sf::Vector2f(800.0f, 4.0f));
+	m_BottomBlueBar.setFillColor(sf::Color::Blue);
+	// Green Centre Line
+	m_GreenCentreLine.setPosition(0.0f, 443.0f);
+	m_GreenCentreLine.setSize(sf::Vector2f(800.0f, 2.0f));
+	m_GreenCentreLine.setFillColor(sf::Color::Green);
+
+	m_CurrentPellotAmount = 0;
+
+
+}
+
+
+/// <summary>
+/// default constructor
+/// setup the window properties
+/// load and setup the text 
+/// load and setup thne image
+/// </summary>
+Game::Game() :
+	m_window{ sf::VideoMode{ 800U, 600U, 32U }, "Pacman - Jake Fitzgerald - C00288105" },
+	m_exitGame{false} //when true game will exit
+{
+	setupFontAndText(); // load font 
+	
 
 }
 
@@ -114,15 +152,11 @@ void Game::processKeys(sf::Event t_event)
 	// Move Left
 	if (sf::Keyboard::A == t_event.key.code)
 	{
-		b_PacmanMoveRight = true; // Stops moving right
+		b_PacmanMoveRight = false; // Stops moving right
 		b_PacmanMoveLeft = true;
 	}
 }
 
-/// <summary>
-/// Update the game world
-/// </summary>
-/// <param name="t_deltaTime">time interval per frame</param>
 void Game::update(sf::Time t_deltaTime)
 {
 	if (m_exitGame)
@@ -142,24 +176,24 @@ void Game::update(sf::Time t_deltaTime)
 	// Check if A has been pressed
 	if (b_PacmanMoveLeft == true && b_PacmanMoveRight == false)
 	{
-		movement.x += -100.0f;
+		movement.x -= 100.0f;
 	}
 
 	// Movement by Delta time (last frame)  
 	m_PacmanShape.move(movement * t_deltaTime.asSeconds());
 
-	// Collision Detection - Use globalbounds instead?
-	if (m_PacmanShape.getPosition().x > m_PellotShape.getPosition().x &&
-		m_PacmanShape.getPosition().x < m_PellotShape.getPosition().x ||
-		m_PacmanShape.getPosition().y > m_PellotShape.getPosition().y &&
-		m_PacmanShape.getPosition().y < m_PellotShape.getPosition().y)
+
+	
+	if (m_PacmanShape.getGlobalBounds().intersects(m_PellotShape.getGlobalBounds()))
 	{
-		// Collided!
+		// Add to pellot counter
+		m_CurrentPellotAmount += 1;
 		// Move Pellot off-screen
 		m_PellotShape.setPosition(1000.0f, 1000.0f);
 
 	}
 }
+	
 
 /// <summary>
 /// draw the frame and then switch buffers
@@ -173,19 +207,17 @@ void Game::render()
 	// Pellots
 	m_window.draw(m_PellotShape);
 
+	// Environment
+	m_window.draw(m_TopBlueBar);
+	m_window.draw(m_BottomBlueBar);
+	m_window.draw(m_GreenCentreLine);
+
+	// Text 
+	m_window.draw(m_TextPacman);
+
 	m_window.display();
 }
 
-/// <summary>
-/// load the font and setup the text message for screen
-/// </summary>
-void Game::setupFontAndText()
-{
-	if (!m_ArialBlackfont.loadFromFile("ASSETS\\FONTS\\ariblk.ttf"))
-	{
-		std::cout << "problem loading arial black font" << std::endl;
-	}
-	
 
-}
+
 

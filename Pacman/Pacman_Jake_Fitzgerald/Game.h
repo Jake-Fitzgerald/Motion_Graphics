@@ -37,11 +37,31 @@ private:
 
 	// Pacman 
 	sf::CircleShape m_PacmanShape;
+	// Pellot
 	sf::CircleShape m_PellotShape;
+	// Ghost
 	sf::RectangleShape m_GhostShape;
 
+	// Environment
+	// Top Blue Bar
+	sf::RectangleShape m_TopBlueBar;
+	// Bottom Blue Bar
+	sf::RectangleShape m_BottomBlueBar;
+	// Green Centre Line
+	sf::RectangleShape m_GreenCentreLine;
+
+	// Pellot Amount
+	int m_CurrentPellotAmount;
+
+	// Movement Bools
 	bool b_PacmanMoveRight = false;
 	bool b_PacmanMoveLeft = false;
+	
+	// Text
+	sf::Text m_TextPacman;
+	
+
+
 
 };
 
