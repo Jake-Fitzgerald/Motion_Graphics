@@ -134,19 +134,19 @@ void Game::update(sf::Time t_deltaTime)
 	sf::Vector2f movement(0.f, 0.f);
 
 	// Check if D has been pressed
-	if (b_PacmanMoveRight == true)
+	if (b_PacmanMoveRight == true && b_PacmanMoveLeft == false)
 	{
-		movement.x += 1.0f;
+		movement.x += 100.0f;
 	}
 
 	// Check if A has been pressed
-	if (b_PacmanMoveLeft == true)
+	if (b_PacmanMoveLeft == true && b_PacmanMoveRight == false)
 	{
-		movement.x -= 1.0f;
+		movement.x += -100.0f;
 	}
 
 	// Movement by Delta time (last frame)  
-	m_PacmanShape.move(movement * deltaTime.asSeconds());
+	m_PacmanShape.move(movement * t_deltaTime.asSeconds());
 
 	// Collision Detection - Use globalbounds instead?
 	if (m_PacmanShape.getPosition().x > m_PellotShape.getPosition().x &&
