@@ -39,6 +39,8 @@ private:
 	sf::CircleShape m_PacmanShape;
 	// Pellot
 	sf::CircleShape m_PellotShape;
+	// Large Pellot
+	sf::CircleShape m_LargePellotShape;
 	// Ghost
 	sf::RectangleShape m_GhostShape;
 
@@ -56,9 +58,16 @@ private:
 	// Movement Bools
 	bool b_PacmanMoveRight = false;
 	bool b_PacmanMoveLeft = false;
+
+	// Pellot bools
+	bool b_ResetPellots = false;
+
+	// Screen
+	int m_screenWidth;
 	
 	// Text
 	sf::Text m_TextPacman;
+	sf::Text m_TextPellotCounter;
 	
 
 

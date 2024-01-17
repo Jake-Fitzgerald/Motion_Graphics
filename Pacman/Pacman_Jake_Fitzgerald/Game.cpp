@@ -16,6 +16,7 @@ void Game::setupFontAndText()
 	}
 
 	// Setup Text
+	// Title Text
 	m_TextPacman.setFont(m_ArialBlackfont);
 	m_TextPacman.setString("P A C M A N");
 	m_TextPacman.setCharacterSize(60);
@@ -26,29 +27,52 @@ void Game::setupFontAndText()
 	m_TextPacman.setOutlineColor(sf::Color::Yellow);
 	m_TextPacman.setOutlineThickness(0.8f);
 
+	// Pellot Counter Text
+	m_TextPellotCounter.setFont(m_ArialBlackfont);
+	m_TextPellotCounter.setString("0");
+	m_TextPellotCounter.setCharacterSize(50);
+	m_TextPellotCounter.setFillColor(sf::Color::White);
+	m_TextPellotCounter.setStyle(sf::Text::Bold);
+	m_TextPellotCounter.setPosition(400.0f, 200.0f);
+	m_TextPellotCounter.setOutlineColor(sf::Color::Red);
+	m_TextPellotCounter.setOutlineThickness(0.8f);
+
 
 	// Shapes setup
 	// Pacman
 	m_PacmanShape.setRadius(40.0f);
-	m_PacmanShape.setPosition(100.0f, 400.0f);
+	m_PacmanShape.setOrigin(20.0f, 20.0f);
+	m_PacmanShape.setPosition(60.0f, 424.0f);
 	m_PacmanShape.setFillColor(sf::Color::Yellow);
 
-	// Pellots
+	// Pellot
 	m_PellotShape.setRadius(10.0f);
-	m_PellotShape.setPosition(200.0f, 434.0f);
+	m_PellotShape.setOrigin(5.0f, 5.0f);
+	m_PellotShape.setPosition(200.0f, 440.0f);
 	m_PellotShape.setFillColor(sf::Color::Yellow);
+
+	// Large Pellot
+	m_LargePellotShape.setRadius(20.0f);
+	m_LargePellotShape.setOrigin(10.0f, 10.0f);
+	m_LargePellotShape.setPosition(400.0f, 435.0f);
+	m_LargePellotShape.setFillColor(sf::Color::Yellow);
+	m_LargePellotShape.setOutlineColor(sf::Color::Red);
+	m_LargePellotShape.setOutlineThickness(2.0f);
 
 	// Environment
 	// Top Blue Bar
 	m_TopBlueBar.setPosition(0.0f, 380.0f);
-	m_TopBlueBar.setSize(sf::Vector2f(800.0f, 4.0f));
+	m_TopBlueBar.setOrigin(800.0f, 2.0f);
+	m_TopBlueBar.setSize(sf::Vector2f(1600.0f, 4.0f));
 	m_TopBlueBar.setFillColor(sf::Color::Blue);
 	// Bottom Blue Bar
 	m_BottomBlueBar.setPosition(0.0f, 500.0f);
-	m_BottomBlueBar.setSize(sf::Vector2f(800.0f, 4.0f));
+	m_BottomBlueBar.setOrigin(800.0f, 2.0f);
+	m_BottomBlueBar.setSize(sf::Vector2f(1600.0f, 4.0f));
 	m_BottomBlueBar.setFillColor(sf::Color::Blue);
 	// Green Centre Line
 	m_GreenCentreLine.setPosition(0.0f, 443.0f);
+	m_BottomBlueBar.setOrigin(400.0f, 1.0f);
 	m_GreenCentreLine.setSize(sf::Vector2f(800.0f, 2.0f));
 	m_GreenCentreLine.setFillColor(sf::Color::Green);
 
@@ -69,8 +93,9 @@ Game::Game() :
 	m_exitGame{false} //when true game will exit
 {
 	setupFontAndText(); // load font 
-	
 
+	m_screenWidth = m_window.getSize().x ;
+	
 }
 
 /// <summary>
@@ -183,15 +208,62 @@ void Game::update(sf::Time t_deltaTime)
 	m_PacmanShape.move(movement * t_deltaTime.asSeconds());
 
 
-	
+	// Collision for small pellot
 	if (m_PacmanShape.getGlobalBounds().intersects(m_PellotShape.getGlobalBounds()))
 	{
 		// Add to pellot counter
 		m_CurrentPellotAmount += 1;
 		// Move Pellot off-screen
 		m_PellotShape.setPosition(1000.0f, 1000.0f);
+	}
+	// Collision for large pellot
+	if (m_PacmanShape.getGlobalBounds().intersects(m_LargePellotShape.getGlobalBounds()))
+	{
+		// Add to pellot counter
+		m_CurrentPellotAmount += 5;
+		// Move Pellot off-screen
+		m_LargePellotShape.setPosition(1000.0f, 1000.0f);
+	}
+
+	// Update counter text
+
+	// Check if all the pellots have been eaten
+	if (m_CurrentPellotAmount >= 3)
+	{
+		std::cout << "All pellots eaten ---> Reset pellots!" << std::endl;
+		// Turn pellot reset to true
+		b_ResetPellots = true;
+	}
+
+	// Pellot reset function
+	if (b_ResetPellots == true)
+	{
+		// Reset pellots
+
+		// Set resetpellots to false
+		b_ResetPellots = false;
+	}
+
+	// Check boundaries
+	float xPos = m_PacmanShape.getPosition().x;
+	if (xPos <= -25 || xPos >= 825)
+	{
+		if (xPos <= -25)
+		{
+			// Move Pacman back to left spawn
+			m_PacmanShape.setPosition(0.0f, 424.0f);
+		}
+		else
+		{
+			// Move Pacman back to right spawn
+			m_PacmanShape.setPosition(800.0f, 424.0f);
+		}
 
 	}
+
+	//(m_screenWidth + 40U)
+
+		
 }
 	
 
@@ -206,6 +278,8 @@ void Game::render()
 	m_window.draw(m_PacmanShape);
 	// Pellots
 	m_window.draw(m_PellotShape);
+	// Large Pellot
+	m_window.draw(m_LargePellotShape);
 
 	// Environment
 	m_window.draw(m_TopBlueBar);
@@ -214,6 +288,7 @@ void Game::render()
 
 	// Text 
 	m_window.draw(m_TextPacman);
+	m_window.draw(m_TextPellotCounter);
 
 	m_window.display();
 }
