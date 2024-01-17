@@ -33,9 +33,19 @@ void Game::setupFontAndText()
 	m_TextPellotCounter.setCharacterSize(50);
 	m_TextPellotCounter.setFillColor(sf::Color::White);
 	m_TextPellotCounter.setStyle(sf::Text::Bold);
-	m_TextPellotCounter.setPosition(400.0f, 200.0f);
+	m_TextPellotCounter.setPosition(270.0f, 150.0f);
 	m_TextPellotCounter.setOutlineColor(sf::Color::Red);
 	m_TextPellotCounter.setOutlineThickness(0.8f);
+
+	// Personal Best Text
+	m_TextPersonalBest.setFont(m_ArialBlackfont);
+	m_TextPersonalBest.setString("0");
+	m_TextPersonalBest.setCharacterSize(50);
+	m_TextPersonalBest.setFillColor(sf::Color::White);
+	m_TextPersonalBest.setStyle(sf::Text::Bold);
+	m_TextPersonalBest.setPosition(330.0f, 220.0f);
+	m_TextPersonalBest.setOutlineColor(sf::Color::Green);
+	m_TextPersonalBest.setOutlineThickness(0.8f);
 
 
 	// Shapes setup
@@ -94,7 +104,8 @@ Game::Game() :
 {
 	setupFontAndText(); // load font 
 
-	m_screenWidth = m_window.getSize().x ;
+	m_screenWidth = m_window.getSize().x;
+	m_screenHeight = m_window.getSize().y;
 	
 }
 
@@ -225,7 +236,14 @@ void Game::update(sf::Time t_deltaTime)
 		m_LargePellotShape.setPosition(1000.0f, 1000.0f);
 	}
 
+	// Update Personal Best Counter (move this to it's own func!)
+	m_PersonalBestAmount = m_CurrentPellotAmount;
+
 	// Update counter text
+	m_TextPellotCounter.setString("Pellots: " + std::to_string(m_CurrentPellotAmount));
+
+	// Update personal best text
+	m_TextPersonalBest.setString("PB: " + std::to_string(m_CurrentPellotAmount));
 
 	// Check if all the pellots have been eaten
 	if (m_CurrentPellotAmount >= 3)
@@ -250,20 +268,18 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		if (xPos <= -25)
 		{
-			// Move Pacman back to left spawn
-			m_PacmanShape.setPosition(0.0f, 424.0f);
+			// Move Pacman back to right spawn
+			m_PacmanShape.setPosition(824U, 424U);
 		}
 		else
 		{
-			// Move Pacman back to right spawn
-			m_PacmanShape.setPosition(800.0f, 424.0f);
+			// Move Pacman back to left spawn
+			m_PacmanShape.setPosition(-24, 424U);
 		}
 
 	}
 
-	//(m_screenWidth + 40U)
-
-		
+	
 }
 	
 
@@ -289,6 +305,7 @@ void Game::render()
 	// Text 
 	m_window.draw(m_TextPacman);
 	m_window.draw(m_TextPellotCounter);
+	m_window.draw(m_TextPersonalBest);
 
 	m_window.display();
 }

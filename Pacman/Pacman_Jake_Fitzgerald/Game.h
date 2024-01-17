@@ -54,20 +54,26 @@ private:
 
 	// Pellot Amount
 	int m_CurrentPellotAmount;
+	int m_PersonalBestAmount;
 
 	// Movement Bools
 	bool b_PacmanMoveRight = false;
 	bool b_PacmanMoveLeft = false;
+
+	// Health Bools
+	bool b_IsPacmanAlive = true;
 
 	// Pellot bools
 	bool b_ResetPellots = false;
 
 	// Screen
 	int m_screenWidth;
+	int m_screenHeight;
 	
 	// Text
 	sf::Text m_TextPacman;
 	sf::Text m_TextPellotCounter;
+	sf::Text m_TextPersonalBest;
 	
 
 
