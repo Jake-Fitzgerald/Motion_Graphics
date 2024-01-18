@@ -57,23 +57,7 @@ void Game::setupFontAndText()
 	m_PacmanShape.setPosition(60.0f, 424.0f);
 	m_PacmanShape.setFillColor(sf::Color::Yellow);
 
-	// Pellot
-	// Loop to create the place array of pellots
-	for (int i = 0; i < m_TOTAL_PELLOT_AMOUNT; i++)
-	{
-		m_PellotShape[i].setFillColor(sf::Color::Yellow);
-		m_PellotShape[i].setRadius(10.0f);
-		m_PellotShape[i].setOrigin(5.0f, 5.0f);
-		m_PellotShape[i].setPosition(80.0f * i, 440.0f);
-	}
 
-	// Large Pellot
-	m_LargePellotShape.setRadius(20.0f);
-	m_LargePellotShape.setOrigin(10.0f, 10.0f);
-	m_LargePellotShape.setPosition(400.0f, 435.0f);
-	m_LargePellotShape.setFillColor(sf::Color::Yellow);
-	m_LargePellotShape.setOutlineColor(sf::Color::Red);
-	m_LargePellotShape.setOutlineThickness(2.0f);
 
 	// Ghost
 	m_GhostShape.setFillColor(sf::Color::Red);
@@ -100,21 +84,18 @@ void Game::setupFontAndText()
 	m_GreenCentreLine.setSize(sf::Vector2f(800.0f, 2.0f));
 	m_GreenCentreLine.setFillColor(sf::Color::Green);
 
-	m_CurrentPellotAmount = 0;
+	m_PersonalBestAmount = 0;
 
-	// Reset 
+	// Reset Functions
+	resetPellots();
 	resetGhostPos();
+	resetPacman();
+	resetScores();
+
+	b_GameOver = false;
 }
 
 
-
-
-/// <summary>
-/// default constructor
-/// setup the window properties
-/// load and setup the text 
-/// load and setup thne image
-/// </summary>
 Game::Game() :
 	m_window{ sf::VideoMode{ 800U, 600U, 32U }, "Pacman - Jake Fitzgerald - C00288105" },
 	m_exitGame{false} //when true game will exit
@@ -123,25 +104,12 @@ Game::Game() :
 
 	m_screenWidth = m_window.getSize().x;
 	m_screenHeight = m_window.getSize().y;
-	
 }
 
-/// <summary>
-/// default destructor we didn't dynamically allocate anything
-/// so we don't need to free it, but mthod needs to be here
-/// </summary>
 Game::~Game()
 {
 }
 
-
-/// <summary>
-/// main game loop
-/// update 60 times per second,
-/// process update as often as possible and at least 60 times per second
-/// draw as often as possible but only updates are on time
-/// if updates run slow then don't render frames
-/// </summary>
 void Game::run()
 {	
 	sf::Clock clock;
@@ -161,11 +129,7 @@ void Game::run()
 		render(); // as many as possible
 	}
 }
-/// <summary>
-/// handle user and system events/ input
-/// get key presses/ mouse moves etc. from OS
-/// and user :: Don't do game update here
-/// </summary>
+
 void Game::processEvents()
 {
 	sf::Event newEvent;
@@ -182,11 +146,6 @@ void Game::processEvents()
 	}
 }
 
-
-/// <summary>
-/// deal with key presses from the user
-/// </summary>
-/// <param name="t_event">key press event</param>
 void Game::processKeys(sf::Event t_event)
 {
 	if (sf::Keyboard::Escape == t_event.key.code)
@@ -217,6 +176,9 @@ void Game::update(sf::Time t_deltaTime)
 		m_window.close();
 	}
 
+	//-----------------------------------------------------------------
+	// Pacman Movement
+
 	// Movement Vector to move Pacman
 	sf::Vector2f movement(0.f, 0.f);
 
@@ -237,43 +199,43 @@ void Game::update(sf::Time t_deltaTime)
 	
 	// Pacaman boundary check
 	checkBoundaries();
-	
+	//-----------------------------------------------------------------
+
 	// Pellot Collision
 	pellotCollision();
+	// Pellot Collection
+	checkPellotsCollected();
 	// Ghost Movement
 	ghostMovement();
 	// Ghost Collision
 	ghostCollision();
 
+	// Pacman Powerup
+	checkPacmanPowerUp();
+
+	if (b_GameOver == true)
+	{
+		// Reset the game
+		resetGame();
+		b_GameOver = false;
+	}
 
 
 	// Update Personal Best Counter (move this to it's own func!)
-	m_PersonalBestAmount = m_CurrentPellotAmount;
+	//m_PersonalBestAmount = m_CurrentPellotAmount;
 
 	// Update counter text
 	m_TextPellotCounter.setString("Pellots: " + std::to_string(m_CurrentPellotAmount));
 
 	// Update personal best text
-	m_TextPersonalBest.setString("PB: " + std::to_string(m_CurrentPellotAmount));
-
-	// Check if all the pellots have been eaten + large pellot
-	if (m_CurrentPellotAmount >= m_TOTAL_PELLOT_AMOUNT + 1)
-	{
-		std::cout << "All pellots eaten ---> Reset pellots!" << std::endl;
-		// Turn pellot reset to true
-		b_ResetPellots = true;
-	}
+	m_TextPersonalBest.setString("PB: " + std::to_string(m_PersonalBestAmount));
 
 	// Pellot reset function
 	if (b_ResetPellots == true)
 	{
 		// Reset pellots
-
-		// Set resetpellots to false
-		b_ResetPellots = false;
+		resetPellots();
 	}
-
-
 	
 }
 
@@ -286,6 +248,8 @@ void Game::pellotCollision()
 		{
 			// Add to pellot counter
 			m_CurrentPellotAmount += 1;
+			// Add to PB
+			m_PersonalBestAmount += 1;
 			// Move Pellot off-screen
 			m_PellotShape[i].setPosition(1000.0f, 1000.0f);
 		}
@@ -295,40 +259,59 @@ void Game::pellotCollision()
 	{
 		// Add to pellot counter
 		m_CurrentPellotAmount += 1;
+		// Add to PB
+		m_PersonalBestAmount += 1;
 		// Move Pellot off-screen
 		m_LargePellotShape.setPosition(1000.0f, 1000.0f);
 		// Make Ghost vulnerable by Pacman powering up
 		b_IsPacmanPoweredUp = true;
-		// Turn Pacman a different colour
-		m_PacmanShape.setFillColor(sf::Color::White);
+	}
+}
+
+void Game::checkPellotsCollected()
+{
+	// Check if all the pellots have been eaten + large pellot
+	if (m_CurrentPellotAmount >= m_TOTAL_PELLOT_AMOUNT + 1)
+	{
+		std::cout << "All pellots eaten ---> Reset pellots!" << std::endl;
+		// Turn pellot reset to true
+		b_ResetPellots = true;
+		// Reset Pellot Counter
+		m_CurrentPellotAmount = 0;										// Change this!!!!
+		// Turn off powerup (Makes it harder next round?)
+		b_IsPacmanPoweredUp = false;
 	}
 }
 
 void Game::ghostMovement()
 {
-	// Ghost movement
-	sf::Vector2f ghostMovement(0.0f, 0.0f);
-	if (b_GhostSwitchDirection == false)
+	if (b_IsGhostAlive == true)
 	{
-		m_ghostXPos += m_GhostSpeed;
-	}
-	else
-	{
-		m_ghostXPos -= m_GhostSpeed;
-	}
-	// Move Ghost
-	m_GhostShape.setPosition(m_ghostXPos, 400.0f);
+		// Ghost movement
+		sf::Vector2f ghostMovement(0.0f, 0.0f);
+		if (b_GhostSwitchDirection == false)
+		{
+			m_ghostXPos += m_GhostSpeed;
+		}
+		else
+		{
+			m_ghostXPos -= m_GhostSpeed;
+		}
+		// Move Ghost
+		m_GhostShape.setPosition(m_ghostXPos, 400.0f);
 
-	// Ghost Switch Directions
-	if (m_ghostXPos >= 700.0f)
-	{
-		b_GhostSwitchDirection = true;
-	}
+		// Ghost Switch Directions
+		if (m_ghostXPos >= 700.0f)
+		{
+			b_GhostSwitchDirection = true;
+		}
 
-	if (m_ghostXPos <= 100.0f)
-	{
-		b_GhostSwitchDirection = false;
+		if (m_ghostXPos <= 100.0f)
+		{
+			b_GhostSwitchDirection = false;
+		}
 	}
+	
 }
 
 void Game::ghostCollision()
@@ -341,18 +324,88 @@ void Game::ghostCollision()
 			b_IsGhostAlive = false;
 			m_PacmanShape.setFillColor(sf::Color::Yellow);
 		}
+		else
+		{
+			// Kill the player by reseting the game
+			//resetGame();
+		}
 	}
 
 	// Check is Ghost alive
 	if (b_IsGhostAlive == false)
 	{
 		m_GhostShape.setPosition(1000.0f, 1000.0f);
+		// Turn powerup off
+		b_IsPacmanPoweredUp = false;
 	}
+}
+
+void Game::checkPacmanPowerUp()
+{
+	if (b_IsPacmanPoweredUp == true)
+	{
+		// Turn Pacman a different colour
+		m_PacmanShape.setFillColor(sf::Color::White);
+	}
+	else if (b_IsPacmanPoweredUp == false)
+	{
+		// Turn Pacman yellow
+		m_PacmanShape.setFillColor(sf::Color::Yellow);
+	}
+}
+
+void Game::resetPellots()
+{
+	// Pellot
+	// Loop to create the place array of pellots
+	for (int i = 0; i < m_TOTAL_PELLOT_AMOUNT; i++)
+	{
+		m_PellotShape[i].setFillColor(sf::Color::Yellow);
+		m_PellotShape[i].setRadius(10.0f);
+		m_PellotShape[i].setOrigin(5.0f, 5.0f);
+		m_PellotShape[i].setPosition(80.0f * i, 440.0f);
+	}
+
+	// Large Pellot
+	m_LargePellotShape.setRadius(20.0f);
+	m_LargePellotShape.setOrigin(10.0f, 10.0f);
+	m_LargePellotShape.setPosition(400.0f, 435.0f);
+	m_LargePellotShape.setFillColor(sf::Color::Yellow);
+	m_LargePellotShape.setOutlineColor(sf::Color::Red);
+	m_LargePellotShape.setOutlineThickness(2.0f);
+
+	// Set resetpellots to false
+	b_ResetPellots = false;
+}
+
+void Game::resetScores()
+{
+	// Turn score counter to 0
+	m_CurrentPellotAmount = 0;
 }
 
 void Game::resetGhostPos()
 {
-	m_GhostShape.setPosition(300.0f, 440.0f);
+	m_GhostShape.setPosition((m_ghostXPos + 600.0f), 440.0f);
+	b_IsGhostAlive = true;
+}
+
+void Game::resetPacman()
+{
+	// Turn Pacman back to yellow with bool
+	b_IsPacmanPoweredUp = false;
+	checkPacmanPowerUp();
+}
+
+void Game::resetGame()
+{
+	resetPacman(); // Powerup turn off
+	//resetScores(); // Reset score to 0
+	resetPellots();
+	//resetGhostPos();
+
+	// Set the game back to true
+	b_GameOver = false;
 }
 
 void Game::checkBoundaries()

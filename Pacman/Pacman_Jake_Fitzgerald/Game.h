@@ -32,9 +32,17 @@ private:
 	void setupFontAndText();
 
 	void pellotCollision();
+	void checkPellotsCollected();
 	void ghostMovement();
 	void ghostCollision();
+	void checkPacmanPowerUp();
+
+	void resetPellots();
+	void resetScores();
 	void resetGhostPos();
+	void resetPacman();
+
+	void resetGame();
 
 
 	void checkBoundaries();
@@ -82,8 +90,11 @@ private:
 	bool b_IsGhostAlive = true;
 	bool b_IsPacmanPoweredUp = false;
 
-	// Pellot bools
+	// Pellot Bool
 	bool b_ResetPellots = false;
+
+	// Game State Bool
+	bool b_GameOver = false;
 
 	// Screen
 	int m_screenWidth;
