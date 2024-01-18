@@ -8,6 +8,8 @@
 #include "Game.h"
 #include <iostream>
 
+
+
 void Game::setupFontAndText()
 {
 	if (!m_ArialBlackfont.loadFromFile("ASSETS\\FONTS\\ariblk.ttf"))
@@ -56,10 +58,14 @@ void Game::setupFontAndText()
 	m_PacmanShape.setFillColor(sf::Color::Yellow);
 
 	// Pellot
-	m_PellotShape.setRadius(10.0f);
-	m_PellotShape.setOrigin(5.0f, 5.0f);
-	m_PellotShape.setPosition(200.0f, 440.0f);
-	m_PellotShape.setFillColor(sf::Color::Yellow);
+	// Loop to create the place array of pellots
+	for (int i = 0; i < m_TOTAL_PELLOT_AMOUNT; i++)
+	{
+		m_PellotShape[i].setFillColor(sf::Color::Yellow);
+		m_PellotShape[i].setRadius(10.0f);
+		m_PellotShape[i].setOrigin(5.0f, 5.0f);
+		m_PellotShape[i].setPosition(80.0f * i, 440.0f);
+	}
 
 	// Large Pellot
 	m_LargePellotShape.setRadius(20.0f);
@@ -68,6 +74,14 @@ void Game::setupFontAndText()
 	m_LargePellotShape.setFillColor(sf::Color::Yellow);
 	m_LargePellotShape.setOutlineColor(sf::Color::Red);
 	m_LargePellotShape.setOutlineThickness(2.0f);
+
+	// Ghost
+	m_GhostShape.setFillColor(sf::Color::Red);
+	m_GhostShape.setSize(sf::Vector2f(100.0f, 100.0f));
+	m_GhostShape.setOrigin(50.0f, 50.0f);
+	// Set Ghost Speed
+	m_GhostSpeed = 1.0f;
+	m_ghostXPos = 0.0f;
 
 	// Environment
 	// Top Blue Bar
@@ -88,8 +102,11 @@ void Game::setupFontAndText()
 
 	m_CurrentPellotAmount = 0;
 
-
+	// Reset 
+	resetGhostPos();
 }
+
+
 
 
 /// <summary>
@@ -217,24 +234,18 @@ void Game::update(sf::Time t_deltaTime)
 
 	// Movement by Delta time (last frame)  
 	m_PacmanShape.move(movement * t_deltaTime.asSeconds());
+	
+	// Pacaman boundary check
+	checkBoundaries();
+	
+	// Pellot Collision
+	pellotCollision();
+	// Ghost Movement
+	ghostMovement();
+	// Ghost Collision
+	ghostCollision();
 
 
-	// Collision for small pellot
-	if (m_PacmanShape.getGlobalBounds().intersects(m_PellotShape.getGlobalBounds()))
-	{
-		// Add to pellot counter
-		m_CurrentPellotAmount += 1;
-		// Move Pellot off-screen
-		m_PellotShape.setPosition(1000.0f, 1000.0f);
-	}
-	// Collision for large pellot
-	if (m_PacmanShape.getGlobalBounds().intersects(m_LargePellotShape.getGlobalBounds()))
-	{
-		// Add to pellot counter
-		m_CurrentPellotAmount += 5;
-		// Move Pellot off-screen
-		m_LargePellotShape.setPosition(1000.0f, 1000.0f);
-	}
 
 	// Update Personal Best Counter (move this to it's own func!)
 	m_PersonalBestAmount = m_CurrentPellotAmount;
@@ -245,8 +256,8 @@ void Game::update(sf::Time t_deltaTime)
 	// Update personal best text
 	m_TextPersonalBest.setString("PB: " + std::to_string(m_CurrentPellotAmount));
 
-	// Check if all the pellots have been eaten
-	if (m_CurrentPellotAmount >= 3)
+	// Check if all the pellots have been eaten + large pellot
+	if (m_CurrentPellotAmount >= m_TOTAL_PELLOT_AMOUNT + 1)
 	{
 		std::cout << "All pellots eaten ---> Reset pellots!" << std::endl;
 		// Turn pellot reset to true
@@ -262,6 +273,90 @@ void Game::update(sf::Time t_deltaTime)
 		b_ResetPellots = false;
 	}
 
+
+	
+}
+
+void Game::pellotCollision()
+{
+	// Collision for small pellot
+	for (int i = 0; i < m_TOTAL_PELLOT_AMOUNT; i++)
+	{
+		if (m_PacmanShape.getGlobalBounds().intersects(m_PellotShape[i].getGlobalBounds()))
+		{
+			// Add to pellot counter
+			m_CurrentPellotAmount += 1;
+			// Move Pellot off-screen
+			m_PellotShape[i].setPosition(1000.0f, 1000.0f);
+		}
+	}
+	// Collision for large pellot
+	if (m_PacmanShape.getGlobalBounds().intersects(m_LargePellotShape.getGlobalBounds()))
+	{
+		// Add to pellot counter
+		m_CurrentPellotAmount += 1;
+		// Move Pellot off-screen
+		m_LargePellotShape.setPosition(1000.0f, 1000.0f);
+		// Make Ghost vulnerable by Pacman powering up
+		b_IsPacmanPoweredUp = true;
+		// Turn Pacman a different colour
+		m_PacmanShape.setFillColor(sf::Color::White);
+	}
+}
+
+void Game::ghostMovement()
+{
+	// Ghost movement
+	sf::Vector2f ghostMovement(0.0f, 0.0f);
+	if (b_GhostSwitchDirection == false)
+	{
+		m_ghostXPos += m_GhostSpeed;
+	}
+	else
+	{
+		m_ghostXPos -= m_GhostSpeed;
+	}
+	// Move Ghost
+	m_GhostShape.setPosition(m_ghostXPos, 400.0f);
+
+	// Ghost Switch Directions
+	if (m_ghostXPos >= 700.0f)
+	{
+		b_GhostSwitchDirection = true;
+	}
+
+	if (m_ghostXPos <= 100.0f)
+	{
+		b_GhostSwitchDirection = false;
+	}
+}
+
+void Game::ghostCollision()
+{
+	// Ghost Collision
+	if (m_PacmanShape.getGlobalBounds().intersects(m_GhostShape.getGlobalBounds()))
+	{
+		if (b_IsPacmanPoweredUp == true)
+		{
+			b_IsGhostAlive = false;
+			m_PacmanShape.setFillColor(sf::Color::Yellow);
+		}
+	}
+
+	// Check is Ghost alive
+	if (b_IsGhostAlive == false)
+	{
+		m_GhostShape.setPosition(1000.0f, 1000.0f);
+	}
+}
+
+void Game::resetGhostPos()
+{
+	m_GhostShape.setPosition(300.0f, 440.0f);
+}
+
+void Game::checkBoundaries()
+{
 	// Check boundaries
 	float xPos = m_PacmanShape.getPosition().x;
 	if (xPos <= -25 || xPos >= 825)
@@ -276,16 +371,10 @@ void Game::update(sf::Time t_deltaTime)
 			// Move Pacman back to left spawn
 			m_PacmanShape.setPosition(-24, 424U);
 		}
-
 	}
-
-	
 }
 	
 
-/// <summary>
-/// draw the frame and then switch buffers
-/// </summary>
 void Game::render()
 {
 	m_window.clear(sf::Color::Black);
@@ -293,9 +382,16 @@ void Game::render()
 	// Pacman
 	m_window.draw(m_PacmanShape);
 	// Pellots
-	m_window.draw(m_PellotShape);
+	for (int i = 0; i < m_TOTAL_PELLOT_AMOUNT; i++)
+	{
+		m_window.draw(m_PellotShape[i]);
+	}
+	
 	// Large Pellot
 	m_window.draw(m_LargePellotShape);
+
+	// Ghost
+	m_window.draw(m_GhostShape);
 
 	// Environment
 	m_window.draw(m_TopBlueBar);

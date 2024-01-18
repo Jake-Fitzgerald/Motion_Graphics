@@ -20,6 +20,7 @@ public:
 	/// main method for game
 	/// </summary>
 	void run();
+	
 
 private:
 
@@ -30,15 +31,30 @@ private:
 	
 	void setupFontAndText();
 
+	void pellotCollision();
+	void ghostMovement();
+	void ghostCollision();
+	void resetGhostPos();
+
+
+	void checkBoundaries();
+
+
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
 
 	bool m_exitGame; // control exiting game
 
+	// Pellot Amount
+	int m_TOTAL_PELLOT_AMOUNT = 10;
+	int m_CurrentPellotAmount;
+	int m_PersonalBestAmount;
+
 	// Pacman 
 	sf::CircleShape m_PacmanShape;
 	// Pellot
-	sf::CircleShape m_PellotShape;
+	sf::CircleShape m_PellotShape[10];
+	//sf::CircleShape m_PellotShape[];
 	// Large Pellot
 	sf::CircleShape m_LargePellotShape;
 	// Ghost
@@ -52,9 +68,10 @@ private:
 	// Green Centre Line
 	sf::RectangleShape m_GreenCentreLine;
 
-	// Pellot Amount
-	int m_CurrentPellotAmount;
-	int m_PersonalBestAmount;
+	// Ghost Movement Values
+	int m_GhostSpeed = 3;
+	int m_ghostXPos;
+	bool b_GhostSwitchDirection = false;
 
 	// Movement Bools
 	bool b_PacmanMoveRight = false;
@@ -62,6 +79,8 @@ private:
 
 	// Health Bools
 	bool b_IsPacmanAlive = true;
+	bool b_IsGhostAlive = true;
+	bool b_IsPacmanPoweredUp = false;
 
 	// Pellot bools
 	bool b_ResetPellots = false;
