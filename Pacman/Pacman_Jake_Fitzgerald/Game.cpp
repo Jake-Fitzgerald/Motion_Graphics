@@ -1,13 +1,10 @@
-/// <summary>
-/// @author Peter Lowe
-/// @date May 2019
-///
-/// you need to change the above lines or lose marks
-/// </summary>
+// Student Name : Jake Fitzgerald
+// Student No. : C00288105
 
 #include "Game.h"
 #include <iostream>
-
+#include <cstdlib>
+#include <ctime>
 
 
 void Game::setupFontAndText()
@@ -17,7 +14,6 @@ void Game::setupFontAndText()
 		std::cout << "problem loading arial black font" << std::endl;
 	}
 
-	// Setup Text
 	// Title Text
 	m_TextPacman.setFont(m_ArialBlackfont);
 	m_TextPacman.setString("P A C M A N");
@@ -49,7 +45,6 @@ void Game::setupFontAndText()
 	m_TextPersonalBest.setOutlineColor(sf::Color::Green);
 	m_TextPersonalBest.setOutlineThickness(0.8f);
 
-
 	// Shapes setup
 	// Pacman
 	m_PacmanShape.setRadius(40.0f);
@@ -57,15 +52,13 @@ void Game::setupFontAndText()
 	m_PacmanShape.setPosition(60.0f, 424.0f);
 	m_PacmanShape.setFillColor(sf::Color::Yellow);
 
-
-
 	// Ghost
 	m_GhostShape.setFillColor(sf::Color::Red);
 	m_GhostShape.setSize(sf::Vector2f(100.0f, 100.0f));
 	m_GhostShape.setOrigin(50.0f, 50.0f);
 	// Set Ghost Speed
 	m_GhostSpeed = 1.0f;
-	m_ghostXPos = 0.0f;
+	m_ghostXPos = 400.0f;
 
 	// Environment
 	// Top Blue Bar
@@ -84,6 +77,7 @@ void Game::setupFontAndText()
 	m_GreenCentreLine.setSize(sf::Vector2f(800.0f, 2.0f));
 	m_GreenCentreLine.setFillColor(sf::Color::Green);
 
+	// Personal Best counter
 	m_PersonalBestAmount = 0;
 
 	// Reset Functions
@@ -92,7 +86,6 @@ void Game::setupFontAndText()
 	resetPacman();
 	resetScores();
 
-	b_GameOver = false;
 }
 
 
@@ -213,13 +206,6 @@ void Game::update(sf::Time t_deltaTime)
 	// Pacman Powerup
 	checkPacmanPowerUp();
 
-	if (b_GameOver == true)
-	{
-		// Reset the game
-		resetGame();
-		b_GameOver = false;
-	}
-
 
 	// Update Personal Best Counter (move this to it's own func!)
 	//m_PersonalBestAmount = m_CurrentPellotAmount;
@@ -236,7 +222,6 @@ void Game::update(sf::Time t_deltaTime)
 		// Reset pellots
 		resetPellots();
 	}
-	
 }
 
 void Game::pellotCollision()
@@ -277,41 +262,54 @@ void Game::checkPellotsCollected()
 		// Turn pellot reset to true
 		b_ResetPellots = true;
 		// Reset Pellot Counter
-		m_CurrentPellotAmount = 0;										// Change this!!!!
+		m_CurrentPellotAmount = 0;	
 		// Turn off powerup (Makes it harder next round?)
 		b_IsPacmanPoweredUp = false;
+		// Turn Ghost back on
+		b_IsGhostAlive = true;
 	}
 }
 
 void Game::ghostMovement()
 {
-	if (b_IsGhostAlive == true)
+	
+	// Ghost movement
+	//sf::Vector2f ghostMovement(0.0f, 0.0f);
+	if (b_GhostSwitchDirection == false)
 	{
-		// Ghost movement
-		sf::Vector2f ghostMovement(0.0f, 0.0f);
-		if (b_GhostSwitchDirection == false)
-		{
-			m_ghostXPos += m_GhostSpeed;
-		}
-		else
-		{
-			m_ghostXPos -= m_GhostSpeed;
-		}
-		// Move Ghost
-		m_GhostShape.setPosition(m_ghostXPos, 400.0f);
+		m_ghostXPos += m_GhostSpeed;
+	}
+	else
+	{
+		m_ghostXPos -= m_GhostSpeed;
+	}
 
-		// Ghost Switch Directions
-		if (m_ghostXPos >= 700.0f)
-		{
-			b_GhostSwitchDirection = true;
-		}
 
-		if (m_ghostXPos <= 100.0f)
-		{
-			b_GhostSwitchDirection = false;
-		}
+	// Ghost Switch Directions
+	if (m_ghostXPos >= 700.0f)
+	{
+		b_GhostSwitchDirection = true;
+	}
+
+	if (m_ghostXPos <= 100.0f)
+	{
+		b_GhostSwitchDirection = false;
 	}
 	
+	if (b_IsGhostAlive == false)
+	{
+		srand((unsigned)time(0));
+		int xRandomPos;
+		xRandomPos = (rand() % 500) + 1;
+		m_GhostShape.setPosition(xRandomPos, 1000.0f);
+		//b_IsGhostAlive = true;
+	}
+	else
+	{
+		// Initial Ghost Pos
+		m_GhostShape.setPosition(m_ghostXPos, 440.0f);
+	}
+
 }
 
 void Game::ghostCollision()
@@ -323,18 +321,27 @@ void Game::ghostCollision()
 		{
 			b_IsGhostAlive = false;
 			m_PacmanShape.setFillColor(sf::Color::Yellow);
+			
 		}
 		else
 		{
 			// Kill the player by reseting the game
 			//resetGame();
+			//resetPellots();
+			//resetScores();
+			//m_CurrentPellotAmount = 0;
+			resetPacman();
+			if (m_PersonalBestAmount > 1)
+			{
+				m_PersonalBestAmount = m_PersonalBestAmount - 1;
+				std::cout << "Take damage!" << std::endl;
+			}	
 		}
 	}
 
 	// Check is Ghost alive
 	if (b_IsGhostAlive == false)
 	{
-		m_GhostShape.setPosition(1000.0f, 1000.0f);
 		// Turn powerup off
 		b_IsPacmanPoweredUp = false;
 	}
@@ -373,9 +380,10 @@ void Game::resetPellots()
 	m_LargePellotShape.setFillColor(sf::Color::Yellow);
 	m_LargePellotShape.setOutlineColor(sf::Color::Red);
 	m_LargePellotShape.setOutlineThickness(2.0f);
-
+	
 	// Set resetpellots to false
 	b_ResetPellots = false;
+
 }
 
 void Game::resetScores()
@@ -386,8 +394,16 @@ void Game::resetScores()
 
 void Game::resetGhostPos()
 {
-	m_GhostShape.setPosition((m_ghostXPos + 600.0f), 440.0f);
-	b_IsGhostAlive = true;
+	if (b_IsGhostAlive == false)
+	{
+		m_GhostShape.setPosition((m_ghostXPos + 10000.0f), 440.0f);
+		b_IsGhostAlive = true;
+		b_IsGhostAlive = true;
+	}
+	else
+	{
+		m_GhostShape.setPosition(m_ghostXPos, 440.0f);
+	}
 }
 
 void Game::resetPacman()
@@ -395,6 +411,7 @@ void Game::resetPacman()
 	// Turn Pacman back to yellow with bool
 	b_IsPacmanPoweredUp = false;
 	checkPacmanPowerUp();
+	m_PacmanShape.setPosition(60.0f, 424.0f);
 }
 
 void Game::resetGame()
@@ -402,10 +419,9 @@ void Game::resetGame()
 	resetPacman(); // Powerup turn off
 	//resetScores(); // Reset score to 0
 	resetPellots();
-	//resetGhostPos();
+	resetGhostPos();
+	b_IsGhostAlive = true;
 
-	// Set the game back to true
-	b_GameOver = false;
 }
 
 void Game::checkBoundaries()
@@ -444,8 +460,11 @@ void Game::render()
 	m_window.draw(m_LargePellotShape);
 
 	// Ghost
-	m_window.draw(m_GhostShape);
-
+	if (b_IsGhostAlive == true)
+	{
+		m_window.draw(m_GhostShape);
+	}
+	
 	// Environment
 	m_window.draw(m_TopBlueBar);
 	m_window.draw(m_BottomBlueBar);

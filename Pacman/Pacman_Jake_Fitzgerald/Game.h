@@ -93,9 +93,6 @@ private:
 	// Pellot Bool
 	bool b_ResetPellots = false;
 
-	// Game State Bool
-	bool b_GameOver = false;
-
 	// Screen
 	int m_screenWidth;
 	int m_screenHeight;
@@ -105,8 +102,6 @@ private:
 	sf::Text m_TextPellotCounter;
 	sf::Text m_TextPersonalBest;
 	
-
-
 
 };
 
