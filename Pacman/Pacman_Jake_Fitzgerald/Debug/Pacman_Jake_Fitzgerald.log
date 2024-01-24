@@ -1,7 +1,0 @@
-﻿  Game.cpp
-C:\Users\C00288105\Desktop\Motion_Graphics\Pacman\Pacman_Jake_Fitzgerald\Game.cpp(60,17): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\C00288105\Desktop\Motion_Graphics\Pacman\Pacman_Jake_Fitzgerald\Game.cpp(61,16): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\C00288105\Desktop\Motion_Graphics\Pacman\Pacman_Jake_Fitzgerald\Game.cpp(304,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00288105\Desktop\Motion_Graphics\Pacman\Pacman_Jake_Fitzgerald\Game.cpp(310,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00288105\Desktop\Motion_Graphics\Pacman\Pacman_Jake_Fitzgerald\Game.cpp(405,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Pacman_Jake_Fitzgerald.vcxproj -> C:\Users\C00288105\Desktop\Motion_Graphics\Pacman\Pacman_Jake_Fitzgerald\Debug\Pacman_Jake_Fitzgerald.exe

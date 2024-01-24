@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Users\C00288105\Desktop\Motion_Graphics\Lab 1\Pacman\Pacman_Basic\Pacman_Basic\Debug\Pacman_Basic.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\C00288105\Desktop\Motion_Graphics\Lab 1\Pacman\Pacman_Basic\Pacman_Basic\ASSETS\FONTS\ariblk.ttf</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\C00288105\Desktop\Motion_Graphics\Lab 1\Pacman\Pacman_Basic\Pacman_Basic\ASSETS\IMAGES\SFML-LOGO.png</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

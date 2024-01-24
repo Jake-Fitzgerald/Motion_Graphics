@@ -1,0 +1,8 @@
+﻿  Game.cpp
+C:\Users\C00288105\Desktop\Motion_Graphics\Lab 1\Pacman\Pacman_Basic\Pacman_Basic\Game.h(31,22): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\C00288105\Desktop\Motion_Graphics\Lab 1\Pacman\Pacman_Basic\Pacman_Basic\Game.h(36,21): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  main.cpp
+C:\Users\C00288105\Desktop\Motion_Graphics\Lab 1\Pacman\Pacman_Basic\Pacman_Basic\Game.h(31,22): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\C00288105\Desktop\Motion_Graphics\Lab 1\Pacman\Pacman_Basic\Pacman_Basic\Game.h(36,21): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
+  Pacman_Basic.vcxproj -> C:\Users\C00288105\Desktop\Motion_Graphics\Lab 1\Pacman\Pacman_Basic\Pacman_Basic\Debug\Pacman_Basic.exe
