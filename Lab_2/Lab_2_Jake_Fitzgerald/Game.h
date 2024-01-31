@@ -1,24 +1,15 @@
-/// <summary>
-/// author Pete Lowe May 2019
-/// you need to change the above line or lose marks
-/// </summary>
 #ifndef GAME_HPP
 #define GAME_HPP
-/// <summary>
-/// include guards used so we don't process this file twice
-/// same as #pragma once
-/// Don't forget the endif at the bottom
-/// </summary>
+
 #include <SFML/Graphics.hpp>
+#include "Terrain.h"
 
 class Game
 {
 public:
 	Game();
 	~Game();
-	/// <summary>
-	/// main method for game
-	/// </summary>
+
 	void run();
 
 private:
@@ -29,15 +20,31 @@ private:
 	void render();
 	
 	void setupFontAndText();
-	void setupSprite();
 
 	sf::RenderWindow m_window; // main SFML window
-	sf::Font m_ArialBlackfont; // font used by message
-	sf::Text m_welcomeMessage; // text used for message on screen
-	sf::Texture m_logoTexture; // texture used for sfml logo
-	sf::Sprite m_logoSprite; // sprite used for sfml logo
+	
+	// Player
+	sf::RectangleShape m_playerShape;
+	float playerSpeed = 1.5f;
+
+	bool b_PlayerMoveRight;
+	bool b_PlayerMoveLeft;
 	bool m_exitGame; // control exiting game
 
+	// Terrain
+	// Array
+	int terrainArray[1000]
+		= { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, };
+	const int terrainAmount = 1000;
+
+	// Shape
+	sf::RectangleShape m_terrainShape[1000];
+
+	// Screen Dimensions
+	const int SCREEN_WIDTH = 800U;
+	const int SCREEN_HEIGHT = 600U;
 };
 
 #endif // !GAME_HPP
