@@ -4,10 +4,8 @@
 #include <iostream>
 
 
-
-
 Game::Game() :
-	m_window{ sf::VideoMode{ 800U, 600U, 32U }, "Jake Fitzgerald" },
+	m_window{ sf::VideoMode{ 1000U, 800U, 32U }, "Jake Fitzgerald" },
 	m_exitGame{false} //when true game will exit
 {
 	setupFontAndText(); // load font 
@@ -29,8 +27,9 @@ Game::Game() :
 		//int current_xPos = terrainArray[i];
 
 		// Set positions ---> go to next index position
-		m_terrainShape[i].setPosition(10.0f * i, 0.0f);
+		m_terrainShape[i].setPosition(10.0f * i * 4, 0.0f);
 	}
+
 }
 
 
@@ -83,7 +82,6 @@ void Game::processKeys(sf::Event t_event)
 		m_exitGame = true;
 	}
 
-
 	// Movement
 	// Move Right
 	if (sf::Keyboard::A == t_event.key.code)
@@ -106,7 +104,6 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
-
 
 	// Movement Vector to move Player
 	sf::Vector2f movement(0.f, 0.f);

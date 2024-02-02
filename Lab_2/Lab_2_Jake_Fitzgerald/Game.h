@@ -33,11 +33,10 @@ private:
 
 	// Terrain
 	// Array
-	int terrainArray[1000]
-		= { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, };
-	const int terrainAmount = 1000;
+	int terrainArray[15]
+		= { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1
+		  };
+	const int terrainAmount = 15;
 
 	// Shape
 	sf::RectangleShape m_terrainShape[1000];
