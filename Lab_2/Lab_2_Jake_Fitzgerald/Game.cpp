@@ -21,7 +21,7 @@ Game::Game() :
 	m_playerShape.setFillColor(sf::Color::Blue);
 	m_playerShape.setSize(sf::Vector2f(50.0f, 50.0f));
 	m_playerShape.setOrigin(25.0f, 25.0f);
-	m_playerShape.setPosition(500.0f, 500.0F);
+	m_playerShape.setPosition(500.0f, 500.0f);
 
 	// Setup Bullet
 	m_bulletShape.setFillColor(sf::Color::Yellow);
@@ -56,7 +56,7 @@ Game::Game() :
 		}
 		else if (terrainArray[i] == 3)
 		{
-			// Collectible
+			// Collectible ---> Adds to score on bullet collision
 			m_terrainShape[i].setFillColor((sf::Color::Cyan));
 		}
 	}
@@ -67,6 +67,9 @@ Game::Game() :
 	m_centreLineShape.setSize(sf::Vector2f(1.0f, 1200.0f));
 	m_centreLineShape.setOrigin(0.5f, 400.0f);
 	m_centreLineShape.setPosition(500.0f, 0.0F);
+
+	// Score setup
+	m_score = 0;
 }
 
 
@@ -238,6 +241,10 @@ void Game::update(sf::Time t_deltaTime)
 		}
 	}
 
+	// Bullet and Terrain collision
+	// If 1 (destroy bullet, 0, do nothing, 2 (destroy enemy + add to score), 3 (destroy collectible + add to score)
+
+
 	// Check if all terrain has left the screen
 	for (int i = 0; i < terrainAmount; i++)
 	{
@@ -346,5 +353,22 @@ void Game::setupFontAndText()
 	m_gameOverBGShape.setSize(sf::Vector2f(1000.0f, 800.0f));
 	m_gameOverBGShape.setOrigin(0.0f, 0.0f);
 	m_gameOverBGShape.setPosition(0.0f, 0.0F);
+}
+
+void Game::resetGame()
+{
+	// Bools setup
+	b_isGameOver = false;
+	b_isGameWin = false;
+	b_isGamePlaying = true;
+	b_terrainCanMove = true;
+	b_canPlayerShoot = true;
+
+	// Reset player's pos
+	m_playerShape.setPosition(500.0f, 500.0f);
+
+	// Reset array
+
+
 }
 

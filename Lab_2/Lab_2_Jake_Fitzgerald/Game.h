@@ -22,6 +22,8 @@ private:
 	
 	void setupFontAndText();
 
+	void resetGame();
+
 	sf::RenderWindow m_window; // main SFML window
 	// Display centre line
 	sf::RectangleShape m_centreLineShape;
@@ -60,6 +62,8 @@ private:
 	// Shape
 	sf::RectangleShape m_terrainShape[15];
 
+	// Score
+	int m_score;
 
 	// Screen Dimensions
 	const int SCREEN_WIDTH = 800U;
