@@ -48,40 +48,27 @@ Game::Game() :
 		// Check if it's a 1
 		if (terrainArray[i] == 1)
 		{
-			// i % 10 since there are 10 coloumns, i / 10 because of sets of 10 ---> 10 by 10 array
-			m_terrainShape[i].setPosition(m_terrainSize * (i % 10), i/10 * m_terrainSize);
+			// i % 10 since there are 10 vertical rows, i / 10 because of sets of 10 ---> 10 by 200 array
+			m_terrainShape[i].setPosition(m_terrainSize * (i % 10), i/20 * m_terrainSize);
 			m_terrainShape[i].setSize(sf::Vector2f(m_terrainSize, m_terrainSize));
 			m_terrainShape[i].setFillColor((sf::Color::Red));
 			m_terrainShape[i].setOrigin(40.0f, 40.0f);
-			std::cout << i / 9 << "/n";
+			std::cout << i / 10 << std::endl;
 		}
 		if (i == 9)
 		{
 			m_initY = -1 * m_terrainSize - m_terrainSize;
 		}
-
-		// Set positions ---> go to next index position
-		
-		// If 1 then is active
-		//if (terrainArray[i] == 1)
-		//{
-		//	
-		//}
-		//// else it's blank
-		//else if (terrainArray[i] == 0)
-		//{
-		//	m_terrainShape[i].setFillColor((sf::Color::Black));
-		//}
-		//else if (terrainArray[i] == 2)
-		//{
-		//	// Enemy
-		//	m_terrainShape[i].setFillColor((sf::Color::Magenta));
-		//}
-		//else if (terrainArray[i] == 3)
-		//{
-		//	// Collectible ---> Adds to score on bullet collision
-		//	m_terrainShape[i].setFillColor((sf::Color::Cyan));
-		//}
+		// Enemy
+		if (terrainArray[i] == 2)
+		{
+			m_terrainShape[i].setFillColor((sf::Color::Magenta));
+		}
+		// Collectible
+		if (terrainArray[i] == 3)
+		{
+			m_terrainShape[i].setFillColor((sf::Color::Yellow));
+		}
 	}
 
 
@@ -168,27 +155,28 @@ void Game::processKeys(sf::Event t_event)
 		b_PlayerMoveLeft = false; // Stops moving left
 		b_PlayerMoveRight = true;
 	}
-	// Shoot
-	if (m_waitToFireCounter == 0)
-	{
-		if (sf::Keyboard::Space == t_event.key.code)
-		{
-			for (int i = 0; i < NUM_BULLETS; i++)
-			{
-				if (m_bulletShape[i].getPosition().x == m_offScreenPos.x)
-				{
-					m_bulletShape[i].setPosition(m_playerShape.getPosition());
-				}
-					
-				m_waitToFireCounter = m_waitToFireInterval;
-				break;
-			}
-		}
-	}
-	else
-	{
-		m_waitToFireCounter--;
-	}
+	//// Shoot
+	//if (m_waitToFireCounter == 0)
+	//{
+	//	if (sf::Keyboard::Space == t_event.key.code)
+	//	{
+	//		for (int i = 0; i < NUM_BULLETS; i++)
+	//		{
+	//			if (m_bulletShape[i].getPosition().x == m_offScreenPos.x)
+	//			{
+	//				// Put bullet back to player's pos
+	//				m_bulletShape[i].setPosition(m_playerShape.getPosition());
+	//			}
+	//				
+	//			m_waitToFireCounter = m_waitToFireInterval;
+	//			break;
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	m_waitToFireCounter--;
+	//}
 
 	// If the game is over
 	if (b_isGamePlaying == false)
@@ -204,6 +192,10 @@ void Game::processKeys(sf::Event t_event)
 	{
 		b_isGameWin = true;
 		b_isGamePlaying = false;
+	}
+	if (sf::Keyboard::T == t_event.key.code)
+	{
+		m_score += 100;
 	}
 }
 
@@ -231,13 +223,37 @@ void Game::update(sf::Time t_deltaTime)
 
 	// Movement by Delta time (last frame)  
 	m_playerShape.move(movement * m_playerSpeed * t_deltaTime.asSeconds());
+
+	// Shoot
+	if (m_waitToFireCounter == 0)
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		{
+			for (int i = 0; i < NUM_BULLETS; i++)
+			{
+				if (m_bulletShape[i].getPosition().x == m_offScreenPos.x)
+				{
+					// Put bullet back to player's pos
+					m_bulletShape[i].setPosition(m_playerShape.getPosition());
+				}
+
+				m_waitToFireCounter = m_waitToFireInterval;
+				break;
+			}
+		}
+	}
+	else
+	{
+		m_waitToFireCounter--;
+	}
 	
 	// Player Shooting
 	for (int i = 0; i < NUM_BULLETS; i++)
 	{
+		// If that bullet is not already offscreen
 		if (m_bulletShape[i].getPosition().x != m_offScreenPos.x)
 		{
-			m_bulletShape[i].move(0, m_bulletSpeed);
+			m_bulletShape[i].move(0, -m_bulletSpeed * t_deltaTime.asSeconds());
 			if (m_bulletShape[i].getPosition().y < 0)
 			{
 				m_bulletShape[i].setPosition(m_offScreenPos);
@@ -246,32 +262,21 @@ void Game::update(sf::Time t_deltaTime)
 	}
 
 	// Enemy and bullet collision
-	//for (int projectileIndex = 0; projectileIndex < numProjectiles; projectileIndex++)
-	//{
-	//	if (NonPlayerSprites[npcIndex].getGlobalBounds().intersects(projectiles[projectileIndex].getGlobalBounds()))
-	//	{
-	//		projectiles[projectileIndex].setPosition(offScreenPos);
-	//	}
-	//}
-		
-	// Get player current pos
-	//sf::Vector2f bulletSpawnPos = m_playerShape.getPosition();
-	// Raise bullet spawn pos
-	//bulletSpawnPos.y -= 60.0f;
-
-	// Spawn bullet at this pos
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	m_bulletShape[i].setPosition(bulletSpawnPos);
-
-	//	if (b_shootBullet == true)
-	//	{
-	//		std::cout << "Bullet fired" << std::endl;
-	//		bulletSpawnPos.y -= 10.0f;
-	//	}
-	//	m_bulletShape[i].move(bulletSpawnPos * m_bulletSpeed * t_deltaTime.asSeconds());
-	//}
-
+	for (int bulletIndex = 0; bulletIndex < NUM_BULLETS; bulletIndex++)
+	{
+		for (int i = 0; i < TERRAIN_AMOUNT; i++)
+		{
+			if (m_terrainShape[i].getGlobalBounds().intersects(m_bulletShape[bulletIndex].getGlobalBounds()))
+			{
+				// Put bullet offscreen
+				m_bulletShape[bulletIndex].setPosition(m_offScreenPos);
+				// Move enemy offscreen
+				m_terrainShape[i].setPosition(1000.0f, 1000.0f);
+				// Add to score
+				m_score += 500;
+			}
+		}
+	}
 
 
 	// Terrain
@@ -288,8 +293,8 @@ void Game::update(sf::Time t_deltaTime)
 	// Player and Terrain collision
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
-		// Check if the colour is red
-		if (m_terrainShape[i].getFillColor() == sf::Color::Red)
+		// Check if it's a 1
+		if (terrainArray[i] == 1)
 		{
 			if (m_playerShape.getGlobalBounds().intersects(m_terrainShape[i].getGlobalBounds()))
 			{
@@ -298,21 +303,44 @@ void Game::update(sf::Time t_deltaTime)
 				//b_isGamePlaying = false;
 			}
 		}
+		// Check if it's a 2 for enemy
+		if (terrainArray[i] == 2)
+		{
+			if (m_playerShape.getGlobalBounds().intersects(m_terrainShape[i].getGlobalBounds()))
+			{
+				std::cout << "Player collided with enemy!" << std::endl;
+				//b_isGameOver = true;
+				//b_isGamePlaying = false;
+			}
+		}
+		// Check if it's a 3 for collectible
+		if (terrainArray[i] == 3)
+		{
+			if (m_playerShape.getGlobalBounds().intersects(m_terrainShape[i].getGlobalBounds()))
+			{
+				std::cout << "Player collided with collectible!" << std::endl;
+				m_score += 100;
+			}
+		}
 	}
 
 	// Bullet and Terrain collision
 	// If 1 (destroy bullet, 0, do nothing, 2 (destroy enemy + add to score), 3 (destroy collectible + add to score)
 
+
 	// Check if all terrain has left the screen
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
-		if (m_terrainShape[TERRAIN_AMOUNT].getPosition().y >= SCREEN_HEIGHT)
+		if (m_terrainShape[TERRAIN_AMOUNT].getPosition().y <= SCREEN_HEIGHT)
 		{
-			std::cout << "Game Win!" << std::endl;
+			//std::cout << "Game Win!" << std::endl;
 			//b_isGameWin = true;
 			//b_isGamePlaying = false;
 		}
 	}
+
+	// Score to Score Text
+	m_scoreText.setString("Score: " + std::to_string(m_score));
 }
 
 
@@ -355,6 +383,9 @@ void Game::render()
 		m_window.draw(m_GameWinText);
 		m_window.draw(m_RestartText);
 	}
+
+	// Score
+	m_window.draw(m_scoreText);
 
 	m_window.display();
 }
@@ -415,6 +446,16 @@ void Game::setupFontAndText()
 	m_gameOverBGShape.setSize(sf::Vector2f(1000.0f, 800.0f));
 	m_gameOverBGShape.setOrigin(0.0f, 0.0f);
 	m_gameOverBGShape.setPosition(0.0f, 0.0F);
+
+	// Score Text
+	m_scoreText.setFont(m_ArialBlackfont);
+	m_scoreText.setString("0");
+	m_scoreText.setCharacterSize(50);
+	m_scoreText.setFillColor(sf::Color::White);
+	m_scoreText.setStyle(sf::Text::Bold);
+	m_scoreText.setPosition(270.0f, 150.0f);
+	m_scoreText.setOutlineColor(sf::Color::Red);
+	m_scoreText.setOutlineThickness(0.8f);
 }
 
 void Game::resetGame()

@@ -35,7 +35,7 @@ private:
 	// Bullet
 	sf::RectangleShape m_bulletShape[10];
 	//std::vector<sf::RectangleShape> m_bulletShape;
-	float m_bulletSpeed = 2.0f;
+	float m_bulletSpeed = 500.0f;
 	int m_waitToFireInterval;
 	int m_waitToFireCounter;
 	sf::Vector2f m_offScreenPos;
@@ -61,31 +61,43 @@ private:
 	// Terrain
 	// Draw entire array from bottom up then it moves downwards
 	// Array = 10 by 10
-	int terrainArray[100]
-		= { 1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+	int terrainArray[200]
+		= { 1, 1, 1, 3, 0, 0, 0, 1, 1, 1,
 		1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
 		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
-		1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
+		1, 1, 1, 0, 0, 0, 2, 1, 1, 1,
 		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
 		1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
 		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
 		1, 1, 1, 1, 1, 0, 0, 0, 0, 1,
 		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 0, 0, 0, 0, 1, 1, 1, // 100
+		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
+		1, 1, 1, 1, 0, 3, 0, 1, 1, 1,
 		1, 1, 1, 0, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 0, 0, 0, 0, 0, 0, 1, 1,
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 1, // 200
+
+
 		  };
-	const int TERRAIN_AMOUNT = 100;
-	float m_terrainSpeed = 1.1f;
-	float m_terrainSize = 80.0f;
+	const int TERRAIN_AMOUNT = 200;
+	float m_terrainSpeed = 0.5f;
+	float m_terrainSize = 80.0f; // 1000U wide ---> 10 by 100 (use for debuggin)
 	float m_initY;
 
 	// Shape
-	sf::RectangleShape m_terrainShape[100];
+	sf::RectangleShape m_terrainShape[200];
 
 	// Score
 	int m_score;
 
 	// Screen Dimensions
-	const int SCREEN_WIDTH = 800U;
+	const int SCREEN_WIDTH = 1000U;
 	const int SCREEN_HEIGHT = 600U;
 
 	// Text
@@ -93,6 +105,7 @@ private:
 	sf::Text m_GameOverText;
 	sf::Text m_GameWinText;
 	sf::Text m_RestartText;
+	sf::Text m_scoreText;
 
 	sf::RectangleShape m_gameOverBGShape;
 };

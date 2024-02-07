@@ -12,7 +12,7 @@ class Terrain
 public:
 	int terrain[15] =
 	{
-		1, 1, 1, 0, 0, 0, 0, 0 , 0, 0 , 0, 2, 3, 1, 1
+		1, 1, 1, 1, 1, 0, 0, 0 , 0, 0 , 0, 2, 3, 1, 1
 	};
 
 	bool b_isCollidable = false;

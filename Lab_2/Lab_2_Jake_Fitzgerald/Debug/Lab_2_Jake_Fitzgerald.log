@@ -1,3 +1,5 @@
 ﻿  Game.cpp
-C:\Users\C00288105\Desktop\Motion_Graphics\Lab_2\Lab_2_Jake_Fitzgerald\Game.cpp(327,23): warning C4018: '<': signed/unsigned mismatch
-  Lab_2_Jake_Fitzgerald.vcxproj -> C:\Users\C00288105\Desktop\Motion_Graphics\Lab_2\Lab_2_Jake_Fitzgerald\Debug\Lab_2_Jake_Fitzgerald.exe
+C:\Users\jakef\Desktop\School\Motion_Graphics\Lab_2\Lab_2_Jake_Fitzgerald\Game.cpp(355,23): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+  Generating Code...
+  Lab_2_Jake_Fitzgerald.vcxproj -> C:\Users\jakef\Desktop\School\Motion_Graphics\Lab_2\Lab_2_Jake_Fitzgerald\Debug\Lab_2_Jake_Fitzgerald.exe
