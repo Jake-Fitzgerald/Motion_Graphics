@@ -24,18 +24,26 @@ Game::Game() :
 	m_playerShape.setPosition(500.0f, 500.0f);
 
 	// Setup Bullet
-	for (int i = 0; i < 3; i++)
+	m_waitToFireInterval = 10;
+	m_waitToFireCounter = m_waitToFireInterval;
+
+	m_offScreenPos = { -2000, -2000 };
+	m_bulletSize = {20.0f, 20.0f};
+
+	m_bulletShape[NUM_BULLETS];
+
+	for (int i = 0; i < NUM_BULLETS; i++)
 	{
 		m_bulletShape[i].setFillColor(sf::Color::Yellow);
-		m_bulletShape[i].setSize(sf::Vector2f(20.0f, 40.0f));
+		m_bulletShape[i].setSize(m_bulletSize);
 		m_bulletShape[i].setOrigin(10.0f, 20.0f);
+		m_bulletShape[i].setPosition(m_offScreenPos);
 	}
 
-	int m_shootTimer = 0;
 
 	// Setup Terrain
 	// for loop
-	for (int i = 0; i < terrainAmount; i++)
+	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
 		m_terrainShape[i].setSize(sf::Vector2f(50.0f, 50.0f));
 		m_terrainShape[i].setOrigin(25.0f, 25.0f);
@@ -43,7 +51,7 @@ Game::Game() :
 		//int current_xPos = terrainArray[i];
 
 		// Set positions ---> go to next index position
-		m_terrainShape[i].setPosition((10.0f * i), 0.0f);
+		m_terrainShape[i].setPosition((40.0f * i), 0.0f);
 		// If 1 then is active
 		if (terrainArray[i] == 1)
 		{
@@ -151,13 +159,25 @@ void Game::processKeys(sf::Event t_event)
 		b_PlayerMoveRight = true;
 	}
 	// Shoot
-	if (b_canPlayerShoot == true)
+	if (m_waitToFireCounter == 0)
 	{
-		if (sf::Keyboard::Space == t_event.key.code && m_shootTimer >= 3)
+		if (sf::Keyboard::Space == t_event.key.code)
 		{
-			m_shootTimer = 0;
-			//playerShoot();
+			for (int i = 0; i < NUM_BULLETS; i++)
+			{
+				if (m_bulletShape[i].getPosition().x == m_offScreenPos.x)
+				{
+					m_bulletShape[i].setPosition(m_playerShape.getPosition());
+				}
+					
+				m_waitToFireCounter = m_waitToFireInterval;
+				break;
+			}
 		}
+	}
+	else
+	{
+		m_waitToFireCounter--;
 	}
 
 
@@ -205,15 +225,28 @@ void Game::update(sf::Time t_deltaTime)
 	//m_playerShape.setPosition(movement.x, movement.y);
 
 	// Player Shooting
-	// 	// Shoot Timer
-	if (m_shootTimer < 3)
+	for (int i = 0; i < NUM_BULLETS; i++)
 	{
-		m_shootTimer++;
+		if (m_bulletShape[i].getPosition().x != m_offScreenPos.x)
+		{
+			m_bulletShape[i].move(0, m_bulletSpeed);
+			if (m_bulletShape[i].getPosition().y < 0)
+			{
+				m_bulletShape[i].setPosition(m_offScreenPos);
+			}
+		}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && m_shootTimer >= 3)
-	{
-		m_shootTimer = 0;
-	}
+
+	// Enemy and bullet collision
+	//for (int projectileIndex = 0; projectileIndex < numProjectiles; projectileIndex++)
+	//{
+	//	if (NonPlayerSprites[npcIndex].getGlobalBounds().intersects(projectiles[projectileIndex].getGlobalBounds()))
+	//	{
+	//		projectiles[projectileIndex].setPosition(offScreenPos);
+	//	}
+	//}
+
+
 		
 	// Get player current pos
 	sf::Vector2f bulletSpawnPos = m_playerShape.getPosition();
@@ -241,7 +274,7 @@ void Game::update(sf::Time t_deltaTime)
 	sf::Vector2f terrainMovement(0.f, 0.f);
 
 	// Move terrain 
-	for (int i = 0; i < terrainAmount; i++)
+	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
 		terrainMovement.y += 2.0f;
 		m_terrainShape[i].move(terrainMovement * m_terrainSpeed * t_deltaTime.asSeconds());
@@ -249,7 +282,7 @@ void Game::update(sf::Time t_deltaTime)
 
 
 	// Player and Terrain collision
-	for (int i = 0; i < terrainAmount; i++)
+	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
 		// Check if the colour is red
 		if (m_terrainShape[i].getFillColor() == sf::Color::Red)
@@ -268,9 +301,9 @@ void Game::update(sf::Time t_deltaTime)
 
 
 	// Check if all terrain has left the screen
-	for (int i = 0; i < terrainAmount; i++)
+	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
-		if (m_terrainShape[terrainAmount].getPosition().y >= SCREEN_HEIGHT)
+		if (m_terrainShape[TERRAIN_AMOUNT].getPosition().y >= SCREEN_HEIGHT)
 		{
 			std::cout << "Game Win!" << std::endl;
 			b_isGameWin = true;
@@ -289,15 +322,16 @@ void Game::render()
 	m_window.draw(m_playerShape);
 
 	// Bullet
-	for (size_t i = 0; i < 3; i++)
+	for (size_t i = 0; i < NUM_BULLETS; i++)
 	{
 		m_window.draw(m_bulletShape[i]);
 	}
 	
 
 	// Terain
-	for (int i = 0; i < terrainAmount; i++)
+	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
+		// Don't draw the terrain marked as 0
 		m_window.draw(m_terrainShape[i]);
 	}
 
