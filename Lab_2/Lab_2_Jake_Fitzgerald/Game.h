@@ -33,8 +33,10 @@ private:
 	float m_playerSpeed = 1.5f;
 
 	// Bullet
-	sf::RectangleShape m_bulletShape;
+	sf::RectangleShape m_bulletShape[3];
+	//std::vector<sf::RectangleShape> m_bulletShape;
 	float m_bulletSpeed = 2.0f;
+	int m_shootTimer;
 
 	// Movement
 	bool b_PlayerMoveRight;

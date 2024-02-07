@@ -24,9 +24,14 @@ Game::Game() :
 	m_playerShape.setPosition(500.0f, 500.0f);
 
 	// Setup Bullet
-	m_bulletShape.setFillColor(sf::Color::Yellow);
-	m_bulletShape.setSize(sf::Vector2f(20.0f, 40.0f));
-	m_bulletShape.setOrigin(10.0f, 20.0f);
+	for (int i = 0; i < 3; i++)
+	{
+		m_bulletShape[i].setFillColor(sf::Color::Yellow);
+		m_bulletShape[i].setSize(sf::Vector2f(20.0f, 40.0f));
+		m_bulletShape[i].setOrigin(10.0f, 20.0f);
+	}
+
+	int m_shootTimer = 0;
 
 	// Setup Terrain
 	// for loop
@@ -148,9 +153,10 @@ void Game::processKeys(sf::Event t_event)
 	// Shoot
 	if (b_canPlayerShoot == true)
 	{
-		if (sf::Keyboard::Space == t_event.key.code)
+		if (sf::Keyboard::Space == t_event.key.code && m_shootTimer >= 3)
 		{
-			playerShoot();
+			m_shootTimer = 0;
+			//playerShoot();
 		}
 	}
 
@@ -199,20 +205,36 @@ void Game::update(sf::Time t_deltaTime)
 	//m_playerShape.setPosition(movement.x, movement.y);
 
 	// Player Shooting
+	// 	// Shoot Timer
+	if (m_shootTimer < 3)
+	{
+		m_shootTimer++;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && m_shootTimer >= 3)
+	{
+		m_shootTimer = 0;
+	}
+		
 	// Get player current pos
 	sf::Vector2f bulletSpawnPos = m_playerShape.getPosition();
 	// Raise bullet spawn pos
 	bulletSpawnPos.y -= 60.0f;
 
-	// Spawn bullet at this pos
-	m_bulletShape.setPosition(bulletSpawnPos);
 
-	if (b_shootBullet == true)
+
+	// Spawn bullet at this pos
+	for (int i = 0; i < 3; i++)
 	{
-		std::cout << "Bullet fired" << std::endl;
-		bulletSpawnPos.y -= 10.0f;
+		m_bulletShape[i].setPosition(bulletSpawnPos);
+
+		if (b_shootBullet == true)
+		{
+			std::cout << "Bullet fired" << std::endl;
+			bulletSpawnPos.y -= 10.0f;
+		}
+		m_bulletShape[i].move(bulletSpawnPos * m_bulletSpeed * t_deltaTime.asSeconds());
 	}
-	m_bulletShape.move(bulletSpawnPos * m_bulletSpeed * t_deltaTime.asSeconds());
+
 
 
 	// Terrain
@@ -267,7 +289,11 @@ void Game::render()
 	m_window.draw(m_playerShape);
 
 	// Bullet
-	m_window.draw(m_bulletShape);
+	for (size_t i = 0; i < 3; i++)
+	{
+		m_window.draw(m_bulletShape[i]);
+	}
+	
 
 	// Terain
 	for (int i = 0; i < terrainAmount; i++)
