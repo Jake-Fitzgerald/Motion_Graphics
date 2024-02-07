@@ -33,7 +33,7 @@ private:
 	float m_playerSpeed = 1.5f;
 
 	// Bullet
-	sf::RectangleShape m_bulletShape[1];
+	sf::RectangleShape m_bulletShape[10];
 	//std::vector<sf::RectangleShape> m_bulletShape;
 	float m_bulletSpeed = 2.0f;
 	int m_waitToFireInterval;
@@ -60,15 +60,26 @@ private:
 
 	// Terrain
 	// Draw entire array from bottom up then it moves downwards
-	// Array - column = 5
-	int terrainArray[5]
-		= { 1, 0, 0, 0, 1
+	// Array = 10 by 10
+	int terrainArray[100]
+		= { 1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
+		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 1, 1, 0, 0, 0, 0, 1,
+		1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 0, 0, 0, 0, 1, 1, 1,
 		  };
-	const int TERRAIN_AMOUNT = 5;
-	float m_terrainSpeed = 2.0f;
+	const int TERRAIN_AMOUNT = 100;
+	float m_terrainSpeed = 1.1f;
+	float m_terrainSize = 80.0f;
+	float m_initY;
 
 	// Shape
-	sf::RectangleShape m_terrainShape[15];
+	sf::RectangleShape m_terrainShape[100];
 
 	// Score
 	int m_score;

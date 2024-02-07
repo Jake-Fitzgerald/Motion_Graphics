@@ -21,7 +21,7 @@ Game::Game() :
 	m_playerShape.setFillColor(sf::Color::Blue);
 	m_playerShape.setSize(sf::Vector2f(50.0f, 50.0f));
 	m_playerShape.setOrigin(25.0f, 25.0f);
-	m_playerShape.setPosition(500.0f, 500.0f);
+	m_playerShape.setPosition(500.0f, 600.0f);
 
 	// Setup Bullet
 	m_waitToFireInterval = 10;
@@ -45,33 +45,43 @@ Game::Game() :
 	// for loop
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
-		m_terrainShape[i].setSize(sf::Vector2f(50.0f, 50.0f));
-		m_terrainShape[i].setOrigin(25.0f, 25.0f);
-
-		//int current_xPos = terrainArray[i];
-
-		// Set positions ---> go to next index position
-		m_terrainShape[i].setPosition((40.0f * i), 0.0f);
-		// If 1 then is active
+		// Check if it's a 1
 		if (terrainArray[i] == 1)
 		{
+			// i % 10 since there are 10 coloumns, i / 10 because of sets of 10 ---> 10 by 10 array
+			m_terrainShape[i].setPosition(m_terrainSize * (i % 10), i/10 * m_terrainSize);
+			m_terrainShape[i].setSize(sf::Vector2f(m_terrainSize, m_terrainSize));
 			m_terrainShape[i].setFillColor((sf::Color::Red));
+			m_terrainShape[i].setOrigin(40.0f, 40.0f);
+			std::cout << i / 9 << "/n";
 		}
-		// else it's blank
-		else if (terrainArray[i] == 0)
+		if (i == 9)
 		{
-			m_terrainShape[i].setFillColor((sf::Color::Black));
+			m_initY = -1 * m_terrainSize - m_terrainSize;
 		}
-		else if (terrainArray[i] == 2)
-		{
-			// Enemy
-			m_terrainShape[i].setFillColor((sf::Color::Magenta));
-		}
-		else if (terrainArray[i] == 3)
-		{
-			// Collectible ---> Adds to score on bullet collision
-			m_terrainShape[i].setFillColor((sf::Color::Cyan));
-		}
+
+		// Set positions ---> go to next index position
+		
+		// If 1 then is active
+		//if (terrainArray[i] == 1)
+		//{
+		//	
+		//}
+		//// else it's blank
+		//else if (terrainArray[i] == 0)
+		//{
+		//	m_terrainShape[i].setFillColor((sf::Color::Black));
+		//}
+		//else if (terrainArray[i] == 2)
+		//{
+		//	// Enemy
+		//	m_terrainShape[i].setFillColor((sf::Color::Magenta));
+		//}
+		//else if (terrainArray[i] == 3)
+		//{
+		//	// Collectible ---> Adds to score on bullet collision
+		//	m_terrainShape[i].setFillColor((sf::Color::Cyan));
+		//}
 	}
 
 
@@ -180,7 +190,6 @@ void Game::processKeys(sf::Event t_event)
 		m_waitToFireCounter--;
 	}
 
-
 	// If the game is over
 	if (b_isGamePlaying == false)
 	{
@@ -222,8 +231,7 @@ void Game::update(sf::Time t_deltaTime)
 
 	// Movement by Delta time (last frame)  
 	m_playerShape.move(movement * m_playerSpeed * t_deltaTime.asSeconds());
-	//m_playerShape.setPosition(movement.x, movement.y);
-
+	
 	// Player Shooting
 	for (int i = 0; i < NUM_BULLETS; i++)
 	{
@@ -245,41 +253,37 @@ void Game::update(sf::Time t_deltaTime)
 	//		projectiles[projectileIndex].setPosition(offScreenPos);
 	//	}
 	//}
-
-
 		
 	// Get player current pos
-	sf::Vector2f bulletSpawnPos = m_playerShape.getPosition();
+	//sf::Vector2f bulletSpawnPos = m_playerShape.getPosition();
 	// Raise bullet spawn pos
-	bulletSpawnPos.y -= 60.0f;
-
-
+	//bulletSpawnPos.y -= 60.0f;
 
 	// Spawn bullet at this pos
-	for (int i = 0; i < 3; i++)
-	{
-		m_bulletShape[i].setPosition(bulletSpawnPos);
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	m_bulletShape[i].setPosition(bulletSpawnPos);
 
-		if (b_shootBullet == true)
-		{
-			std::cout << "Bullet fired" << std::endl;
-			bulletSpawnPos.y -= 10.0f;
-		}
-		m_bulletShape[i].move(bulletSpawnPos * m_bulletSpeed * t_deltaTime.asSeconds());
-	}
+	//	if (b_shootBullet == true)
+	//	{
+	//		std::cout << "Bullet fired" << std::endl;
+	//		bulletSpawnPos.y -= 10.0f;
+	//	}
+	//	m_bulletShape[i].move(bulletSpawnPos * m_bulletSpeed * t_deltaTime.asSeconds());
+	//}
 
 
 
 	// Terrain
-	sf::Vector2f terrainMovement(0.f, 0.f);
+	sf::Vector2f terrainMovement(0.f, -m_initY);
 
 	// Move terrain 
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
-		terrainMovement.y += 2.0f;
 		m_terrainShape[i].move(terrainMovement * m_terrainSpeed * t_deltaTime.asSeconds());
+		//m_terrainShape[i].setPosition(1000.0f, -m_initY);
 	}
-
+	m_initY--;
 
 	// Player and Terrain collision
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
@@ -290,8 +294,8 @@ void Game::update(sf::Time t_deltaTime)
 			if (m_playerShape.getGlobalBounds().intersects(m_terrainShape[i].getGlobalBounds()))
 			{
 				std::cout << "Player collided with terrain!" << std::endl;
-				b_isGameOver = true;
-				b_isGamePlaying = false;
+				//b_isGameOver = true;
+				//b_isGamePlaying = false;
 			}
 		}
 	}
@@ -299,18 +303,16 @@ void Game::update(sf::Time t_deltaTime)
 	// Bullet and Terrain collision
 	// If 1 (destroy bullet, 0, do nothing, 2 (destroy enemy + add to score), 3 (destroy collectible + add to score)
 
-
 	// Check if all terrain has left the screen
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
 		if (m_terrainShape[TERRAIN_AMOUNT].getPosition().y >= SCREEN_HEIGHT)
 		{
 			std::cout << "Game Win!" << std::endl;
-			b_isGameWin = true;
-			b_isGamePlaying = false;
+			//b_isGameWin = true;
+			//b_isGamePlaying = false;
 		}
 	}
-
 }
 
 
@@ -425,7 +427,7 @@ void Game::resetGame()
 	b_canPlayerShoot = true;
 
 	// Reset player's pos
-	m_playerShape.setPosition(500.0f, 500.0f);
+	m_playerShape.setPosition(500.0f, 600.0f);
 
 	// Reset array
 
