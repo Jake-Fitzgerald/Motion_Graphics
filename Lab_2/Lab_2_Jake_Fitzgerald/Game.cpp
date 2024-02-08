@@ -49,26 +49,41 @@ Game::Game() :
 		if (terrainArray[i] == 1)
 		{
 			// i % 10 since there are 10 vertical rows, i / 10 because of sets of 10 ---> 10 by 200 array
-			m_terrainShape[i].setPosition(m_terrainSize * (i % 10), i/20 * m_terrainSize);
+			m_terrainShape[i].setPosition(m_terrainSize * (i % 10), i/10 * m_terrainSize);
 			m_terrainShape[i].setSize(sf::Vector2f(m_terrainSize, m_terrainSize));
 			m_terrainShape[i].setFillColor((sf::Color::Red));
 			m_terrainShape[i].setOrigin(40.0f, 40.0f);
 			std::cout << i / 10 << std::endl;
 		}
-		if (i == 9)
-		{
-			m_initY = -1 * m_terrainSize - m_terrainSize;
-		}
+
 		// Enemy
 		if (terrainArray[i] == 2)
 		{
 			m_terrainShape[i].setFillColor((sf::Color::Magenta));
+			m_terrainShape[i].setPosition(m_terrainSize * (i % 10), i / 10 * m_terrainSize);
+			m_terrainShape[i].setSize(sf::Vector2f(m_terrainSize, m_terrainSize));
+			m_terrainShape[i].setOrigin(40.0f, 40.0f);
+			std::cout << i / 10 << std::endl;
 		}
 		// Collectible
 		if (terrainArray[i] == 3)
 		{
 			m_terrainShape[i].setFillColor((sf::Color::Yellow));
+			m_terrainShape[i].setPosition(m_terrainSize * (i % 10), i / 10 * m_terrainSize);
+			m_terrainShape[i].setSize(sf::Vector2f(m_terrainSize, m_terrainSize));
+			m_terrainShape[i].setOrigin(40.0f, 40.0f);
+			std::cout << i / 10 << std::endl;
 		}
+		if (i == 199)
+		{
+			m_initY = -1 * m_terrainSize - m_terrainSize;
+		}
+	}
+
+	// Initial pos
+	for (int i = 0; i < TERRAIN_AMOUNT; i++)
+	{
+		//m_terrainShape[i].setPosition(0.0f, -10.0f);
 	}
 
 
@@ -155,28 +170,6 @@ void Game::processKeys(sf::Event t_event)
 		b_PlayerMoveLeft = false; // Stops moving left
 		b_PlayerMoveRight = true;
 	}
-	//// Shoot
-	//if (m_waitToFireCounter == 0)
-	//{
-	//	if (sf::Keyboard::Space == t_event.key.code)
-	//	{
-	//		for (int i = 0; i < NUM_BULLETS; i++)
-	//		{
-	//			if (m_bulletShape[i].getPosition().x == m_offScreenPos.x)
-	//			{
-	//				// Put bullet back to player's pos
-	//				m_bulletShape[i].setPosition(m_playerShape.getPosition());
-	//			}
-	//				
-	//			m_waitToFireCounter = m_waitToFireInterval;
-	//			break;
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	m_waitToFireCounter--;
-	//}
 
 	// If the game is over
 	if (b_isGamePlaying == false)
@@ -184,6 +177,7 @@ void Game::processKeys(sf::Event t_event)
 		if (sf::Keyboard::R == t_event.key.code)
 		{
 			// Restart the game
+			resetGame();
 		}
 	}
 
@@ -266,29 +260,32 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		for (int i = 0; i < TERRAIN_AMOUNT; i++)
 		{
-			if (m_terrainShape[i].getGlobalBounds().intersects(m_bulletShape[bulletIndex].getGlobalBounds()))
+			if (terrainArray[i] == 2)
 			{
-				// Put bullet offscreen
-				m_bulletShape[bulletIndex].setPosition(m_offScreenPos);
-				// Move enemy offscreen
-				m_terrainShape[i].setPosition(1000.0f, 1000.0f);
-				// Add to score
-				m_score += 500;
+				if (m_terrainShape[i].getGlobalBounds().intersects(m_bulletShape[bulletIndex].getGlobalBounds()))
+				{
+					// Put bullet offscreen
+					m_bulletShape[bulletIndex].setPosition(m_offScreenPos);
+					// Move enemy offscreen
+					m_terrainShape[i].setPosition(1000.0f, 1000.0f);
+					// Add to score
+					m_score += 500;
+				}
 			}
 		}
 	}
 
-
 	// Terrain
 	sf::Vector2f terrainMovement(0.f, -m_initY);
+
 
 	// Move terrain 
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
 		m_terrainShape[i].move(terrainMovement * m_terrainSpeed * t_deltaTime.asSeconds());
-		//m_terrainShape[i].setPosition(1000.0f, -m_initY);
+		//m_terrainShape[i].setPosition(0.0f, 0.0f);
 	}
-	m_initY--;
+	//m_initY--;
 
 	// Player and Terrain collision
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
@@ -319,6 +316,9 @@ void Game::update(sf::Time t_deltaTime)
 			if (m_playerShape.getGlobalBounds().intersects(m_terrainShape[i].getGlobalBounds()))
 			{
 				std::cout << "Player collided with collectible!" << std::endl;
+				// Move shape offscreen
+				m_terrainShape[i].setPosition(1000.0f, 1000.0f);
+				// Add to score
 				m_score += 100;
 			}
 		}
@@ -361,8 +361,12 @@ void Game::render()
 	// Terain
 	for (int i = 0; i < TERRAIN_AMOUNT; i++)
 	{
-		// Don't draw the terrain marked as 0
-		m_window.draw(m_terrainShape[i]);
+		if (terrainArray[i] == 1 || terrainArray[i] == 2 || terrainArray[i] == 3)
+		{
+			// Don't draw the terrain marked as 0
+			m_window.draw(m_terrainShape[i]);
+		}
+
 	}
 
 	// Centre line
@@ -471,7 +475,35 @@ void Game::resetGame()
 	m_playerShape.setPosition(500.0f, 600.0f);
 
 	// Reset array
-
+		// Setup Terrain
+	// for loop
+	for (int i = 0; i < TERRAIN_AMOUNT; i++)
+	{
+		// Check if it's a 1
+		if (terrainArray[i] == 1)
+		{
+			// i % 10 since there are 10 vertical rows, i / 10 because of sets of 10 ---> 10 by 200 array
+			m_terrainShape[i].setPosition(m_terrainSize * (i % 10), i / 10 * m_terrainSize);
+			m_terrainShape[i].setSize(sf::Vector2f(m_terrainSize, m_terrainSize));
+			m_terrainShape[i].setFillColor((sf::Color::Red));
+			m_terrainShape[i].setOrigin(40.0f, 40.0f);
+			std::cout << i / 10 << std::endl;
+		}
+		if (i == 199)
+		{
+			m_initY = -1 * m_terrainSize - m_terrainSize;
+		}
+		// Enemy
+		if (terrainArray[i] == 2)
+		{
+			m_terrainShape[i].setFillColor((sf::Color::Magenta));
+		}
+		// Collectible
+		if (terrainArray[i] == 3)
+		{
+			m_terrainShape[i].setFillColor((sf::Color::Yellow));
+		}
+	}
 
 }
 

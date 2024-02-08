@@ -1,5 +1,4 @@
 ﻿  Game.cpp
+C:\Users\jakef\Desktop\School\Motion_Graphics\Lab_2\Lab_2_Jake_Fitzgerald\Game.cpp(52,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\jakef\Desktop\School\Motion_Graphics\Lab_2\Lab_2_Jake_Fitzgerald\Game.cpp(355,23): warning C4018: '<': signed/unsigned mismatch
-  main.cpp
-  Generating Code...
   Lab_2_Jake_Fitzgerald.vcxproj -> C:\Users\jakef\Desktop\School\Motion_Graphics\Lab_2\Lab_2_Jake_Fitzgerald\Debug\Lab_2_Jake_Fitzgerald.exe
