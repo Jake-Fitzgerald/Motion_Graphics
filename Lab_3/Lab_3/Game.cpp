@@ -8,6 +8,7 @@ Game::Game() :
 	m_window{ sf::VideoMode{ 800, 600, 32U }, "One Button Platformer - Jake Fitzgerald C00288105" },
 	m_exitGame{false} //when true game will exit
 {
+	setupSprites();
 	setUpBlocks();
 }
 
@@ -69,11 +70,23 @@ void Game::update(sf::Time t_deltaTime)
 
 	for (int row = 0; row < HORIZONTAL_NUM; row++)
 	{
-		for (int col = 0; col < VERTICAL_NUM; col++)
+		if (b_isSpeedUp == false)
 		{
+			for (int col = 0; col < VERTICAL_NUM; col++)
+			{
 
-			m_levelWalls[col][row].move(-3.7, 0);
+				m_levelWalls[col][row].move(NORMAL_SPEED, 0);
+			}
 		}
+		else
+		{
+			for (int col = 0; col < VERTICAL_NUM; col++)
+			{
+
+				m_levelWalls[col][row].move(FAST_SPEED, 0);
+			}
+		}
+
 	}
 
 	// Input
@@ -140,7 +153,7 @@ void Game::update(sf::Time t_deltaTime)
 					}
 				}
 			}
-			if (m_levelData[col][row] == 2)
+			if (m_levelData[col][row] == 2) // Grow
 			{
 				if (m_playerShape.getGlobalBounds().intersects(m_levelWalls[col][row].getGlobalBounds()))
 				{
@@ -151,23 +164,44 @@ void Game::update(sf::Time t_deltaTime)
 					b_isScaledUp = false;
 				}
 			}
+			if (m_levelData[col][row] == 3) // Speed
+			{
+				if (m_playerShape.getGlobalBounds().intersects(m_levelWalls[col][row].getGlobalBounds()))
+				{
+					b_isSpeedUp = true;
+				}
+				else
+				{
+					//b_isSpeedUp = false;
+				}
+			}
+			if (m_levelData[col][row] == 4) // Finish
+			{
+				if (m_playerShape.getGlobalBounds().intersects(m_levelWalls[col][row].getGlobalBounds()))
+				{
+					b_isGameOver = true;
+				}
+				else
+				{
+					b_isGameOver = false;
+				}
+			}
 		}
 	}
 
-	// Powerups
+	// - - - - - - - - - - - - - - - - - - - - Powerups  - - - - - - - - - - - - - - - - - - - -
+	// Scale
 	if (b_isScaledUp == true)
 	{
 		m_playerShape.setSize(sf::Vector2f(40, 40));
 		m_playerShape.setFillColor(sf::Color::Cyan);
 	}
 
-	//for (int i = 0; i < largestArray; i++)
-	//{
-	//	if (i < m_levelWalls.size()) // Move Walls
-	//	{
-	//		m_levelWalls[i].move(-2, 0);
-	//	}
-	//}
+	// Speed
+	if (b_isSpeedUp == true)
+	{
+		m_playerShape.setFillColor(sf::Color::Magenta);
+	}
 
 	 //Reset player's pos
 	if (m_playerShape.getPosition().y > 600)
@@ -175,13 +209,22 @@ void Game::update(sf::Time t_deltaTime)
 		init();
 	}
 
+	// Bonus Collision Check
+	if (m_playerShape.getGlobalBounds().intersects(m_bonusPointsShape.getGlobalBounds()))
+	{
+		std::cout << "B O N U S" << std::endl;
+		// Move Bonus off screen
+		m_bonusPointsShape.setPosition(1000.0f, 1000.0f);
+	}
 
-	// Move level
-//moveLevel(largestArray); // Move Level Left
+	// Game Over Check
+	if (b_isGameOver == true)
+	{
+		std::cout << "Game Over" << std::endl;
+	}
 
 }
 		
-
 
 void Game::render()
 {
@@ -193,42 +236,42 @@ void Game::render()
 		for (int col = 0; col < VERTICAL_NUM; col++)
 		{
 			m_window.draw(m_levelWalls[col][row]);
+			m_levelWalls[col][row].getTexture();
 		}
 	}
 
-	int wallIndex = 0;
-
-	// Level Rendering
-	//int dataRow = -1;
-	//int dataCol = 0;
-	//for (int i = 0; i < HORIZONTAL_NUM * VERTICAL_NUM; i++)
-	//{
-	//	dataRow++;
-	//	if (dataRow >= HORIZONTAL_NUM)
-	//	{
-	//		dataCol++;
-	//		dataRow = 0;
-	//	}
-
-	//	switch (m_levelData[dataCol][dataRow])
-	//	{
-	//	case 1:
-	//		m_window.draw(m_levelWalls[wallIndex]);
-	//		wallIndex++;
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
-
+	// Tile textures
+	//m_window.draw(m_spriteTexture);
 
 	// Player
 	m_window.draw(m_playerShape);
+
+	// Player Sprite
+	//m_window.draw(m_playerSprite);
 
 	// Bonus points
 	m_window.draw(m_bonusPointsShape);
 
 	m_window.display();
+}
+
+
+
+void Game::setupSprites()
+{
+	// Setup texture
+	if (!m_spriteTexture.loadFromFile("ASSETS\\IMAGES\\Spritesheet.png"))
+	{
+		std::cout << "Spritesheet not found" << std::endl;
+	}
+	else
+	{
+		// Setup rectangle
+	}
+
+	// Setup sprite
+	m_levelSprite.setTexture(m_spriteTexture);
+	m_playerSprite.setTexture(m_spriteTexture);
 }
 
 void Game::setUpBlocks()
@@ -271,6 +314,7 @@ void Game::init()
 	// Bool powerups
 	b_isSpeedUp = false;
 	b_isSpeedUp = false;
+	b_isGameOver = false;
 
 	
 	// Player Setup
@@ -278,11 +322,15 @@ void Game::init()
 	m_playerShape.setPosition(75, 500);
 	m_playerShape.setFillColor(sf::Color::White);
 
+	m_playerSprite.setPosition(75, 500);
+
 	// Bonus Points
 	m_bonusPointsShape.setSize(sf::Vector2f(20, 20));
-	m_bonusPointsShape.setPosition(100, 250);
+	m_bonusPointsShape.setPosition(80, 250);
 	m_bonusPointsShape.setFillColor(sf::Color::Yellow);
-
+	// Texture
+	m_bonusPointsShape.setTexture(&m_spriteTexture);
+	m_bonusPointsShape.setTextureRect(sf::IntRect(384, 384, 128, 128));
 
 	// Level
 	for (int row = 0; row < HORIZONTAL_NUM; row++)
@@ -290,39 +338,50 @@ void Game::init()
 		for (int col = 0; col < VERTICAL_NUM; col++)
 		{
 
-			if (m_levelData[col][row] == 1)
+			if (m_levelData[col][row] == 1) // Wall
 			{
 				m_levelWalls[col][row].setSize(sf::Vector2f(70, 30));
 				m_levelWalls[col][row].setPosition(row * 70, col * 30);
-				m_levelWalls[col][row].setFillColor(sf::Color::Red);
+				//m_levelWalls[col][row].setFillColor(sf::Color::Red);
+				m_levelWalls[col][row].setTexture(&m_spriteTexture);
+				m_levelWalls[col][row].setTextureRect(sf::IntRect(384, 384, 128, 128));
 			}
-			if (m_levelData[col][row] == 0)
+			if (m_levelData[col][row] == 0) // Blank
 			{
 
 				m_levelWalls[col][row].setSize(sf::Vector2f(70, 30));
 				m_levelWalls[col][row].setPosition(row * 70, col * 30);
 				m_levelWalls[col][row].setFillColor(sf::Color::Black);
 			}
-			if (m_levelData[col][row] == 2)
+			if (m_levelData[col][row] == 2) // Grow
+			{
+				m_levelWalls[col][row].setSize(sf::Vector2f(30, 30));
+				m_levelWalls[col][row].setPosition(row * 70, col * 30);
+				m_levelWalls[col][row].setFillColor(sf::Color::Blue);
+				m_levelWalls[col][row].setTexture(&m_spriteTexture);
+				m_levelWalls[col][row].setTextureRect(sf::IntRect(128, 384, 128, 128));
+			}
+			if (m_levelData[col][row] == 3) // Speed
+			{
+				m_levelWalls[col][row].setSize(sf::Vector2f(30, 30));
+				m_levelWalls[col][row].setPosition(row * 70, col * 30);
+				//m_levelWalls[col][row].setFillColor(sf::Color::Green);
+				m_levelWalls[col][row].setTexture(&m_spriteTexture);
+				m_levelWalls[col][row].setTextureRect(sf::IntRect(256, 384, 128, 128));
+			}
+			if (m_levelData[col][row] == 4) // Finish
 			{
 				m_levelWalls[col][row].setSize(sf::Vector2f(70, 30));
 				m_levelWalls[col][row].setPosition(row * 70, col * 30);
-
-				m_levelWalls[col][row].setFillColor(sf::Color::Blue);
+				//m_levelWalls[col][row].setFillColor(sf::Color::Yellow);
+				m_levelWalls[col][row].setTexture(&m_spriteTexture);
+				m_levelWalls[col][row].setTextureRect(sf::IntRect(0, 384, 128, 128));
 			}
 
 		}
 		std::cout << std::endl;
 	}
 
-	// We need a dataCol and dataRow
-	// When we get to the end of a row, we increment the dataCol and go to the next row.
-	// 
-	// 
-
-
-	// Array size
-	//largestArray = m_levelWalls.size();
 
 
 }
