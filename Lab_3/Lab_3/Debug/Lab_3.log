@@ -1,24 +1,19 @@
 ﻿  Game.cpp
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(42,20): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(139,28): warning C4244: 'initializing': conversion from 'double' to 'const int', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(140,26): warning C4244: 'initializing': conversion from 'double' to 'const int', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(47,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(144,28): warning C4244: 'initializing': conversion from 'double' to 'const int', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(145,26): warning C4244: 'initializing': conversion from 'double' to 'const int', possible loss of data
 C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(78,33): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
 C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(86,33): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
 C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(95,18): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(106,14): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(344,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(344,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(353,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(353,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(359,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(359,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(367,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(367,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(375,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(375,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  main.cpp
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(42,20): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(139,28): warning C4244: 'initializing': conversion from 'double' to 'const int', possible loss of data
-C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.h(140,26): warning C4244: 'initializing': conversion from 'double' to 'const int', possible loss of data
-  Generating Code...
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(116,14): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(392,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(392,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(401,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(401,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(407,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(407,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(415,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(415,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(423,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Game.cpp(423,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Lab_3.vcxproj -> C:\Users\jakef\Desktop\School\Motion_Graphics\Motion_Graphics\Lab_3\Lab_3\Debug\Lab_3.exe

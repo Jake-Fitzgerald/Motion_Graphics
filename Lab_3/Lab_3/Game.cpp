@@ -94,13 +94,18 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_velocityY = -11.8;
 		std::cout << "Jump" << "\n";
+		m_jumpSound.play();
+		b_isJumping = true;
+	}
+	if (b_isJumping == true)
+	{
+		// Player Jump movement
+		m_velocityY = m_velocityY + m_gravity;
+		m_playerShape.move(0, m_velocityY);
+		//m_playerShape.setTextureRect(sf::IntRect(100, 200, 100, 100));
 	}
 
-	// Player Jump movement
-	m_velocityY = m_velocityY + m_gravity;
-	m_playerShape.move(0, m_velocityY);
-
-	// Bonus Points movement
+	// Bonus Points Shape movement
 	m_bonusPointsShape.move(0, m_bonusShapeVelocityY);
 
 	m_gravity = 0.6;
@@ -195,12 +200,14 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_playerShape.setSize(sf::Vector2f(40, 40));
 		m_playerShape.setFillColor(sf::Color::Cyan);
+		m_powerUpSound.play();
 	}
 
 	// Speed
 	if (b_isSpeedUp == true)
 	{
 		m_playerShape.setFillColor(sf::Color::Magenta);
+		m_powerUpSound.play();
 	}
 
 	 //Reset player's pos
@@ -213,6 +220,8 @@ void Game::update(sf::Time t_deltaTime)
 	if (m_playerShape.getGlobalBounds().intersects(m_bonusPointsShape.getGlobalBounds()))
 	{
 		std::cout << "B O N U S" << std::endl;
+		// Play Bonus Sound
+		m_bonusCollectSound.play();
 		// Move Bonus off screen
 		m_bonusPointsShape.setPosition(1000.0f, 1000.0f);
 	}
@@ -221,7 +230,16 @@ void Game::update(sf::Time t_deltaTime)
 	if (b_isGameOver == true)
 	{
 		std::cout << "Game Over" << std::endl;
+		// Play Win Sound
+		m_winSound.play();
+
+		// Restart the game
+		init();
 	}
+
+	// Animation
+	m_playerShape.setTextureRect(sf::IntRect(0, 0, 128, 128));
+
 
 }
 		
@@ -246,9 +264,6 @@ void Game::render()
 	// Player
 	m_window.draw(m_playerShape);
 
-	// Player Sprite
-	//m_window.draw(m_playerSprite);
-
 	// Bonus points
 	m_window.draw(m_bonusPointsShape);
 
@@ -269,9 +284,36 @@ void Game::setupSprites()
 		// Setup rectangle
 	}
 
-	// Setup sprite
-	m_levelSprite.setTexture(m_spriteTexture);
-	m_playerSprite.setTexture(m_spriteTexture);
+	// Sound setup
+	//if (!m_runBuffer.loadFromFile("ASSETS\\SOUNDS\\run.wav"))
+	//{
+	//	std::cout << "run.wav could not be found" << std::endl;
+	//}
+	//m_runSound.setBuffer(m_runBuffer);
+	if (!m_jumpBuffer.loadFromFile("ASSETS\\SOUNDS\\boing.wav"))
+	{
+		std::cout << "boing.wav could not be found" << std::endl;
+	}
+	m_jumpSound.setBuffer(m_jumpBuffer);
+	// Powerup sound
+	if (!m_powerUpBuffer.loadFromFile("ASSETS\\SOUNDS\\bonk.wav"))
+	{
+		std::cout << "bonk.wav could not be found" << std::endl;
+	}
+	m_powerUpSound.setBuffer(m_powerUpBuffer);
+	// Win sound - Use lose sound since it's sounds better
+	if (!m_winBuffer.loadFromFile("ASSETS\\SOUNDS\\lose.wav"))
+	{
+		std::cout << "lose.wav could not be found" << std::endl;
+	}
+	m_winSound.setBuffer(m_winBuffer);
+	// Bonus Sound
+	if (!m_bonusCollectBuffer.loadFromFile("ASSETS\\SOUNDS\\bink.wav"))
+	{
+		std::cout << "bink.wav could not be found" << std::endl;
+	}
+	m_bonusCollectSound.setBuffer(m_bonusCollectBuffer);
+
 }
 
 void Game::setUpBlocks()
@@ -279,15 +321,15 @@ void Game::setUpBlocks()
 	int dataCol = 0; // Start before first line
 	int dataRow = -1;
 
-	//for (int i = 0; i < HORIZONTAL_NUM * VERTICAL_NUM; i++)
-	//{
-	//	dataRow++; // Go to first line
-	//	if (dataRow >= HORIZONTAL_NUM)
-	//	{
-	//		dataCol++;
-	//		dataRow = 0;
-	//	}
-
+	for (int i = 0; i < HORIZONTAL_NUM * VERTICAL_NUM; i++)
+	{
+		dataRow++; // Go to first line
+		if (dataRow >= HORIZONTAL_NUM)
+		{
+			dataCol++;
+			dataRow = 0;
+		}
+	}
 	//	// Turn into Switch Statement
 	//	if (m_levelData[dataCol][dataRow] == 1) // Make Wall
 	//	{
@@ -316,13 +358,14 @@ void Game::init()
 	b_isSpeedUp = false;
 	b_isGameOver = false;
 
-	
+
 	// Player Setup
 	m_playerShape.setSize(sf::Vector2f(20, 20));
 	m_playerShape.setPosition(75, 500);
 	m_playerShape.setFillColor(sf::Color::White);
+	m_playerShape.setTexture(&m_spriteTexture);
+	m_playerShape.setTextureRect(sf::IntRect(0, 0, 128, 128));
 
-	m_playerSprite.setPosition(75, 500);
 
 	// Bonus Points
 	m_bonusPointsShape.setSize(sf::Vector2f(20, 20));
@@ -377,12 +420,13 @@ void Game::init()
 				m_levelWalls[col][row].setTexture(&m_spriteTexture);
 				m_levelWalls[col][row].setTextureRect(sf::IntRect(0, 384, 128, 128));
 			}
-
 		}
 		std::cout << std::endl;
 	}
 
-
-
+	// Animation
+	// Reset intRect to 0 in case
+	int m_xPosSS = 0;
+	int m_yPosSS = 0;
 }
 

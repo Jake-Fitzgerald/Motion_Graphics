@@ -5,8 +5,13 @@
 #define GAME_HPP
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <time.h> 
 #include <vector>
+
+
+// Animation
+enum class Frames { Run1, Run2, Run3, Run4, Run5, Run6, Run7, Run8, Jump1, Jump2, Fall1, Fall2 };
 
 class Game
 {
@@ -139,13 +144,48 @@ private:
 	const int NORMAL_SPEED = -3.5;
 	const int FAST_SPEED = -4.0;
 
+	// Power Ups
 	bool b_isSpeedUp;
 	bool b_isScaledUp;
+
+	// Game State
 	bool b_isGameOver;
 
+	// Player States
+	bool b_isGrounded;
+	bool b_isJumping;
+	bool b_isFalling;
+
 	sf::Texture m_spriteTexture;
-	sf::Sprite m_playerSprite;
-	sf::Sprite m_levelSprite;
+	//sf::Sprite m_playerSprite;		// Don't think we need sprites
+	//sf::Sprite m_levelSprite;
+
+	// Animation
+	Frames m_currentFrame = Frames::Run1; // Set to Frame 1 of run
+
+	int m_xPosSS = 0;
+	int m_yPosSS = 0;
+
+	// Sound 
+	sf::SoundBuffer m_buffer;
+	sf::SoundBuffer m_runBuffer;
+	sf::SoundBuffer m_jumpBuffer;
+	sf::SoundBuffer m_bonusCollectBuffer;
+	//sf::SoundBuffer m_deathBuffer;
+	//sf::SoundBuffer m_restartBuffer;
+	//sf::SoundBuffer m_loseBuffer;
+	sf::SoundBuffer m_winBuffer;
+	sf::SoundBuffer m_powerUpBuffer;
+
+	sf::Music m_runSound;
+	sf::Sound m_jumpSound; // Boing.wav
+	sf::Sound m_bonusCollectSound; // Bink.wav
+	//sf::Sound m_deathSound;
+	//sf::Sound m_restartSound;
+	//sf::Sound m_loseSound;
+	sf::Sound m_winSound;
+	sf::Sound m_powerUpSound; // Bonk.wav
+	
 
 };
 
