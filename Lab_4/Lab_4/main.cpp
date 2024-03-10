@@ -1,5 +1,4 @@
-// Student Name : Jake Fitzgerald
-// Student No. : C00288105
+// Name: Jake Fitzgerald - C00288105
 
 #ifdef _DEBUG 
 #pragma comment(lib,"sfml-graphics-d.lib") 

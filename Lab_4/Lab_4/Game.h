@@ -1,5 +1,4 @@
-// Student Name : Jake Fitzgerald
-// Student No. : C00288105
+// Name: Jake Fitzgerald - C00288105
 #ifndef GAME_HPP
 #define GAME_HPP
 /// <summary>
@@ -29,12 +28,23 @@ private:
 	void setupFontAndText();
 	void setupSprite();
 
+	void init();
+
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
 	sf::Text m_welcomeMessage; // text used for message on screen
 	sf::Texture m_logoTexture; // texture used for sfml logo
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
 	bool m_exitGame; // control exiting game
+
+	// Screen size is 1000 X 1000 pixels so each tile is 100 X 100
+	// 10 tiles horizontally/vertically.
+	const int GRID_AMOUNT = 100;
+	sf::RectangleShape gridSquares[100];
+
+	float squareSize = 100.0f;
+	float squareRowPos;
+	float squareColPos;
 
 };
 
