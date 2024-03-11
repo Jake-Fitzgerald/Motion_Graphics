@@ -3,6 +3,7 @@
 #include "Game.h"
 #include <iostream>
 
+
 Game::Game() :
 	m_window{ sf::VideoMode{ 1000U, 1000U, 32U }, "Lab 4  - Level Editor - Jake Fitzgerald" },
 	m_exitGame{false} //when true game will exit
@@ -78,7 +79,8 @@ void Game::render()
 	// Grid Squares
 	for (int i = 0; i < GRID_AMOUNT; i++)
 	{
-		m_window.draw(gridSquares[i]);
+		//m_window.draw(gridSquares[i]);
+		//m_window.draw()
 	}
 
 	m_window.display();
@@ -114,17 +116,22 @@ void Game::setupSprite()
 
 void Game::init()
 {
+	// Create instance of our struct
+	gridStruct gridstruct;
+
 	// Set the amout of squares to 100
-	gridSquares[GRID_AMOUNT];
+	gridstruct.gridSquares[GRID_AMOUNT];
+
+	//gridSquares[GRID_AMOUNT];
 	squareRowPos = 0.0f;
 	squareColPos = 0.0f;
 
 	for (int i = 0; i < GRID_AMOUNT; i++)
 	{
-		gridSquares[i].setScale(squareSize, squareSize);
-		gridSquares[i].setFillColor(sf::Color::Blue);
+		gridstruct.gridSquares[i].setScale(squareSize, squareSize);
+		gridstruct.gridSquares[i].setFillColor(sf::Color::Blue);
 		// Fill first row
-		gridSquares[i].setPosition(squareRowPos + 100.0f, squareColPos);
+		gridstruct.gridSquares[i].setPosition(squareRowPos + 100.0f, squareColPos);
 		if (squareRowPos >= 1000.0f)
 		{
 			squareColPos += 100.0f; // Move down a row

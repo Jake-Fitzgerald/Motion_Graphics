@@ -37,10 +37,18 @@ private:
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
 	bool m_exitGame; // control exiting game
 
+
+
 	// Screen size is 1000 X 1000 pixels so each tile is 100 X 100
 	// 10 tiles horizontally/vertically.
 	const int GRID_AMOUNT = 100;
-	sf::RectangleShape gridSquares[100];
+	
+	// Struct containing array of grid squares and corresponding sprite amount
+	struct gridStruct
+	{
+		sf::RectangleShape gridSquares[100];
+		sf::Sprite gridSquareSprite;
+	};
 
 	float squareSize = 100.0f;
 	float squareRowPos;
