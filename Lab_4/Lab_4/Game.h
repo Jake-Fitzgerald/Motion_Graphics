@@ -65,6 +65,18 @@ private:
 	sf::Sprite m_cursorSprite;
 	bool b_isCursorVisible = false;
 
+	// Tile selection
+	sf::RectangleShape m_SelectTile;
+	struct SelectTileButton
+	{
+		sf::Sprite m_selectTileSprite;
+	};
+	SelectTileButton m_SelectTileButton[3];
+
+	// Level
+	int m_levelSpeed = -2;
+	int m_moveLevelPage = 0;
+
 };
 
 #endif // !GAME_HPP

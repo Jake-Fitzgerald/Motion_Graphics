@@ -57,6 +57,27 @@ Game::Game() :
 		else
 			yPos += 100;
 	}
+
+	// Tile Selection
+	m_SelectTile.setSize(sf::Vector2f(100.0f, 100.0f));
+	m_SelectTile.setPosition(sf::Vector2f(375.0f, 725.0f));
+	m_SelectTile.setFillColor(sf::Color::Green);
+
+	// Spritesheet int rect
+	int spriteSheetPos = 0;
+	int tileSelectorYpos = 200;
+	for (int i = 0; i < 3; i++)
+	{
+		// Set our texture
+		m_SelectTileButton[i].m_selectTileSprite.setTexture(m_tileTexture);
+		// Set our int rect
+		m_SelectTileButton[i].m_selectTileSprite.setTextureRect(sf::IntRect(spriteSheetPos, 0, 100, 100));
+		m_SelectTileButton[i].m_selectTileSprite.setPosition(sf::Vector2f(900, tileSelectorYpos));
+		// Move to next sprite in spritesheet
+		spriteSheetPos += 100.0f;
+		// Move our next sprite to the left
+		tileSelectorYpos += 200.0f;
+	}
 }
 
 Game::~Game()
@@ -170,6 +191,12 @@ void Game::render()
 	for (int i = 0; i < MAX_LINES; i++)
 	{
 		m_window.draw(m_editorLines[i]);
+	}
+
+	// Tile Selector
+	for (int i = 0; i < 3; i++)
+	{
+		m_window.draw(m_SelectTileButton[i].m_selectTileSprite);
 	}
 
 	// Cursor
