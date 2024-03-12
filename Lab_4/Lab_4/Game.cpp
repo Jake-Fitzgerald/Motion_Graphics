@@ -19,12 +19,16 @@ Game::Game() :
 	for (int i = 0; i < EDITOR_SIZE; i++)
 	{
 		m_gridStuct[i].gridSquaresShape.setFillColor(sf::Color::Red);
+		if (i % 2 == 0)
+		{
+			m_gridStuct[i].gridSquaresShape.setFillColor(sf::Color::Magenta);
+		}
 		m_gridStuct[i].gridSquaresShape.setSize(sf::Vector2f(100.0f, 100.0f));
 		m_gridStuct[i].gridSquaresShape.setPosition(sf::Vector2f(squareRowPos, squareColPos));
 
 		// Move next square
 		squareRowPos += 100.0f;
-		if (squareRowPos >= SCREEN_WIDTH * 2)
+		if (squareRowPos >= SCREEN_WIDTH * 1) // Multiply by 2 for second page
 		{
 			squareRowPos = 0; // Set x back to 0
 			squareColPos += 100; // Move down a row
@@ -92,6 +96,10 @@ void Game::processEvents()
 		{
 			processKeys(newEvent);
 		}
+		if (sf::Event::MouseButtonReleased == newEvent.type)
+		{
+			mouseKeys(newEvent);
+		}
 	}
 }
 
@@ -103,12 +111,46 @@ void Game::processKeys(sf::Event t_event)
 	}
 }
 
+void Game::mouseKeys(sf::Event t_event)
+{
+	// Mouse Positions
+	double mouseXPos = t_event.mouseButton.x;
+	double mouseYPos = t_event.mouseButton.y;
+
+	if (sf::Mouse::Button::Left == t_event.key.code)
+	{
+
+	}
+	else if (sf::Mouse::Button::Right == t_event.key.code) // Removing Blocks
+	{
+		// Extra if you have time
+	}
+}
+
 void Game::update(sf::Time t_deltaTime)
 {
 	if (m_exitGame)
 	{
 		m_window.close();
 	}
+
+	// Check current game state
+	if (m_currentGameState == gameState::SelectTile)
+	{
+		// Cursor
+		b_isCursorVisible = true;
+		moveCursor();
+	}
+	else if (m_currentGameState == gameState::PlaceTile)
+	{
+
+	}
+	else // Must be gameplay
+	{
+
+	}
+
+
 }
 
 /// <summary>
@@ -128,6 +170,12 @@ void Game::render()
 	for (int i = 0; i < MAX_LINES; i++)
 	{
 		m_window.draw(m_editorLines[i]);
+	}
+
+	// Cursor
+	if (b_isCursorVisible == true)
+	{
+		m_window.draw(m_cursorSprite);
 	}
 
 
@@ -153,19 +201,20 @@ void Game::setupFontAndText()
 
 void Game::setupSprite()
 {
-	if (!m_logoTexture.loadFromFile("ASSETS\\IMAGES\\SFML-LOGO.png"))
+	if (!m_tileTexture.loadFromFile("ASSETS\\IMAGES\\TileSpritesheet.png"))
 	{
-		// simple error message if previous call fails
-		std::cout << "problem loading logo" << std::endl;
+		std::cout << "problem loading Tile Spritesheet" << std::endl;
 	}
-	m_logoSprite.setTexture(m_logoTexture);
-	m_logoSprite.setPosition(300.0f, 180.0f);
+	m_cursorSprite.setTexture(m_tileTexture);
+	m_cursorSprite.setPosition(0.0f, 0.0f);
 }
 
 void Game::init()
 {
 
+}
 
-
-
+void Game::moveCursor()
+{
+	std::cout << "x:  " << sf::Mouse::getPosition(m_window).x << "     y:  " << sf::Mouse::getPosition(m_window).y << std::endl;
 }

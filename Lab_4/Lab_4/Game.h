@@ -14,15 +14,13 @@ class Game
 public:
 	Game();
 	~Game();
-	/// <summary>
-	/// main method for game
-	/// </summary>
 	void run();
 
 private:
 
 	void processEvents();
 	void processKeys(sf::Event t_event);
+	void mouseKeys(sf::Event t_event);
 	void update(sf::Time t_deltaTime);
 	void render();
 	
@@ -31,14 +29,16 @@ private:
 
 	void init();
 
+	// Cursor
+	void moveCursor();
+
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
-	sf::Text m_welcomeMessage; // text used for message on screen
-	sf::Texture m_logoTexture; // texture used for sfml logo
-	sf::Sprite m_logoSprite; // sprite used for sfml logo
 	bool m_exitGame; // control exiting game
 
-
+	// Game States
+	enum class gameState {SelectTile, PlaceTile, Gameplay}; // Different game states
+	gameState m_currentGameState = gameState::SelectTile; // Initial State on startup
 
 	// Screen size is 1000 X 1000 pixels so each tile is 100 X 100
 	// 10 tiles horizontally/vertically.
@@ -59,6 +59,11 @@ private:
 
 	// Editor Lines
 	sf::RectangleShape m_editorLines[MAX_LINES];
+
+	// Cursor
+	sf::Texture m_tileTexture;
+	sf::Sprite m_cursorSprite;
+	bool b_isCursorVisible = false;
 
 };
 
