@@ -5,12 +5,54 @@
 
 
 Game::Game() :
-	m_window{ sf::VideoMode{ 1000U, 1000U, 32U }, "Lab 4  - Level Editor - Jake Fitzgerald" },
+	m_window{ sf::VideoMode{ SCREEN_WIDTH, SCREEN_HEIGHT, 32U }, "Lab 4  - Level Editor - Jake Fitzgerald" },
 	m_exitGame{false} //when true game will exit
 {
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 	init();
+
+	// Squares setup
+	squareRowPos = 0.0f;
+	squareColPos = 0.0f;
+
+	for (int i = 0; i < EDITOR_SIZE; i++)
+	{
+		m_gridStuct[i].gridSquaresShape.setFillColor(sf::Color::Red);
+		m_gridStuct[i].gridSquaresShape.setSize(sf::Vector2f(100.0f, 100.0f));
+		m_gridStuct[i].gridSquaresShape.setPosition(sf::Vector2f(squareRowPos, squareColPos));
+
+		// Move next square
+		squareRowPos += 100.0f;
+		if (squareRowPos >= SCREEN_WIDTH * 2)
+		{
+			squareRowPos = 0; // Set x back to 0
+			squareColPos += 100; // Move down a row
+		}
+	}
+
+	// Grid Lines
+	float xPos = 0.0f;
+	float yPos = 0.0f;
+	// Make Grid Lines
+	for (int i = 0; i < MAX_LINES; i++)
+	{
+		if (i <= 50)
+		{
+			m_editorLines[i].setSize(sf::Vector2f(2, SCREEN_HEIGHT));
+			m_editorLines[i].setPosition(sf::Vector2f(xPos - 1, yPos));
+		}
+		else
+		{
+			xPos = 0;
+			m_editorLines[i].setSize(sf::Vector2f(SCREEN_WIDTH, 2));
+			m_editorLines[i].setPosition(sf::Vector2f(xPos, yPos - 1));
+		}
+		if (i <= 50)
+			xPos += 100;
+		else
+			yPos += 100;
+	}
 }
 
 Game::~Game()
@@ -79,9 +121,15 @@ void Game::render()
 	// Grid Squares
 	for (int i = 0; i < GRID_AMOUNT; i++)
 	{
-		//m_window.draw(gridSquares[i]);
-		//m_window.draw()
+		m_window.draw(m_gridStuct[i].gridSquaresShape);
 	}
+
+	// Grid Lines
+	for (int i = 0; i < MAX_LINES; i++)
+	{
+		m_window.draw(m_editorLines[i]);
+	}
+
 
 	m_window.display();
 }
@@ -116,28 +164,8 @@ void Game::setupSprite()
 
 void Game::init()
 {
-	// Create instance of our struct
-	gridStruct gridstruct;
 
-	// Set the amout of squares to 100
-	gridstruct.gridSquares[GRID_AMOUNT];
 
-	//gridSquares[GRID_AMOUNT];
-	squareRowPos = 0.0f;
-	squareColPos = 0.0f;
 
-	for (int i = 0; i < GRID_AMOUNT; i++)
-	{
-		gridstruct.gridSquares[i].setScale(squareSize, squareSize);
-		gridstruct.gridSquares[i].setFillColor(sf::Color::Blue);
-		// Fill first row
-		gridstruct.gridSquares[i].setPosition(squareRowPos + 100.0f, squareColPos);
-		if (squareRowPos >= 1000.0f)
-		{
-			squareColPos += 100.0f; // Move down a row
-			std::cout << "Create new line" << std::endl;
-		}
-		
-		
-	}
+
 }

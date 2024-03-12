@@ -7,6 +7,7 @@
 /// Don't forget the endif at the bottom
 /// </summary>
 #include <SFML/Graphics.hpp>
+#include "Globals.h"
 
 class Game
 {
@@ -44,15 +45,20 @@ private:
 	const int GRID_AMOUNT = 100;
 	
 	// Struct containing array of grid squares and corresponding sprite amount
-	struct gridStruct
+	struct GridStruct
 	{
-		sf::RectangleShape gridSquares[100];
+		sf::RectangleShape gridSquaresShape;
 		sf::Sprite gridSquareSprite;
+		bool b_isSquareActive = false;
 	};
+	GridStruct m_gridStuct[EDITOR_SIZE];
 
 	float squareSize = 100.0f;
 	float squareRowPos;
 	float squareColPos;
+
+	// Editor Lines
+	sf::RectangleShape m_editorLines[MAX_LINES];
 
 };
 

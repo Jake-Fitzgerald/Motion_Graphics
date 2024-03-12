@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Globals.h" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
