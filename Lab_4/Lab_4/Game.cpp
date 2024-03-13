@@ -130,6 +130,40 @@ void Game::processKeys(sf::Event t_event)
 	{
 		m_exitGame = true;
 	}
+
+	// Tile Selector Hotkey
+	if (sf::Keyboard::Q == t_event.key.code)
+	{
+		// Select Tile 1
+		m_currentlySelectedTile = 1;
+		std::cout << "Tile 1 Selected" << std::endl;
+		m_cursorSprite.setTextureRect(sf::IntRect(0,0,100, 100));
+	}
+	if (sf::Keyboard::W == t_event.key.code)
+	{
+		// Select Tile 2
+		m_currentlySelectedTile = 2;
+		std::cout << "Tile 2 Selected" << std::endl;
+		m_cursorSprite.setTextureRect(sf::IntRect(100, 0, 100, 100));
+	}
+	if (sf::Keyboard::E == t_event.key.code)
+	{
+		// Select Tile 3
+		m_currentlySelectedTile = 3;
+		std::cout << "Tile 3 Selected" << std::endl;
+		m_cursorSprite.setTextureRect(sf::IntRect(200, 0, 100, 100));
+	}
+	if (sf::Keyboard::R)
+	{
+		// Check current game state
+		if (m_currentGameState == gameState::PlaceTile)
+		{
+			b_isTileSelectActive = true;
+		}
+
+		// Changes to Tile Placement state
+
+	}
 }
 
 void Game::mouseKeys(sf::Event t_event)
@@ -140,7 +174,12 @@ void Game::mouseKeys(sf::Event t_event)
 
 	if (sf::Mouse::Button::Left == t_event.key.code)
 	{
-
+		// Check if tile section is active
+		if (b_isTileSelectActive == true)
+		{
+			placeCursor(mouseXPos, mouseYPos);
+		}
+		
 	}
 	else if (sf::Mouse::Button::Right == t_event.key.code) // Removing Blocks
 	{
@@ -243,5 +282,39 @@ void Game::init()
 
 void Game::moveCursor()
 {
-	std::cout << "x:  " << sf::Mouse::getPosition(m_window).x << "     y:  " << sf::Mouse::getPosition(m_window).y << std::endl;
+	//std::cout << "x:  " << sf::Mouse::getPosition(m_window).x << "     y:  " << sf::Mouse::getPosition(m_window).y << std::endl;
+}
+
+void Game::placeCursor(double& t_mouseXPos, double& t_mouseYPos) // Pass in mouse positions
+{
+	//m_currentlySelectedTile = 1; // Defualt is first tile in spritesheet
+
+	// Change game state
+	m_currentGameState = gameState::PlaceTile;
+
+	//// If Tile 1 is selected
+	//if (m_currentlySelectedTile = 1)
+	//{
+
+	//}
+	//// If Tile 2 is selected
+	//else if (m_currentlySelectedTile = 2)
+	//{
+
+	//}
+	//// If Tile 3 is selected
+	//else if (m_currentlySelectedTile = 3)
+	//{
+
+	//}
+
+	int affectedIndex = mousePosToGrid(t_mouseXPos, t_mouseYPos);
+	// Find Index Affected by Placement
+	m_gridStuct[affectedIndex].gridSquareSprite.setTextureRect(m_cursorSprite.getTextureRect());
+	m_gridStuct[affectedIndex].b_isSquareActive = true;
+}
+
+int Game::mousePosToGrid(double& t_mouseXPos, double& t_mouseYPos)
+{
+	return static_cast<int>((t_mouseXPos + m_moveLevelPage * SCREEN_WIDTH) / 100) + (static_cast<int>(t_mouseYPos / 100) * 100);
 }

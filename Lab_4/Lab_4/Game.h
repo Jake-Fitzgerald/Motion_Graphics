@@ -31,6 +31,8 @@ private:
 
 	// Cursor
 	void moveCursor();
+	void placeCursor(double& t_mouseXPos, double& t_mouseYPos);
+	int mousePosToGrid(double& t_mouseXPos, double& t_mouseYPos);
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
@@ -72,6 +74,10 @@ private:
 		sf::Sprite m_selectTileSprite;
 	};
 	SelectTileButton m_SelectTileButton[3];
+
+	int m_currentlySelectedTile = 1;
+
+	bool b_isTileSelectActive = false;
 
 	// Level
 	int m_levelSpeed = -2;
